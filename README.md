@@ -5,7 +5,7 @@
 * Spring Boot를 이용한 서버 구축
 * DB는 개인 자유
 * 화면 구성은 최소한으로 구성
-* 샘플 데이터 제공 (TBU)
+* 샘플 데이터 제공 (https://github.com/NAVER-CAMPUS-HACKDAY/offline_payment_visualization/issues/1)
 
 ### 서버 정보
 * 공인 IP : 106.10.56.145
