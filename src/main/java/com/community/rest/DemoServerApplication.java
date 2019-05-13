@@ -9,6 +9,7 @@ import com.community.rest.utilities.excel.read.ExcelRead;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
 
 import java.util.HashMap;
 import java.util.List;
@@ -23,6 +24,7 @@ public class DemoServerApplication {
 
     }
 
+    @Bean
     public CommandLineRunner runner(TradeRepositorty tradeRepositorty, MerchantRepository merchantRepository) throws Exception {
         ReadOption excelReadOption = new ReadOption();
         excelReadOption.setFilePath("/Users/doheekang/IdeaProjects/demo-server/src/main/resources/sample_data.xlsx");
