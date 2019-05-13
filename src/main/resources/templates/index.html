@@ -1,10 +1,41 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
+
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"
+    />
+    <title>간단한 지도 표시하기</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}" />
+    <script
+            type="text/javascript"
+            src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=qrxonlktn8&submodules=geocoder"
+    ></script>
 </head>
 <body>
-    <h2 th:text="${data}"></h2>
+<div id="map" style="width:100%;height:400px;"></div>
+
+<script>
+      var map = new naver.maps.Map('map')
+      naver.maps.Service.geocode(
+        {
+          query: '세종대로 110'
+        },
+        function(status, response) {
+          if (status !== naver.maps.Service.Status.OK) {
+            return alert(response)
+          }
+          var result = response.v2, // 검색 결과의 컨테이너
+            items = result.addresses // 검색 결과의 배열
+          var marker = new naver.maps.Marker({
+            position: new naver.maps.LatLng(items[0].y, items[0].x),
+            map: map
+          })
+        }
+      )
+    </script>
 </body>
 </html>
