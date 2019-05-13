@@ -1,10 +1,16 @@
 package com.community.rest;
 
+import com.community.rest.domain.Merchant;
+import com.community.rest.domain.Trade;
+import com.community.rest.repository.MerchantRepository;
+import com.community.rest.repository.TradeRepositorty;
 import com.community.rest.utilities.excel.option.ReadOption;
 import com.community.rest.utilities.excel.read.ExcelRead;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -15,24 +21,61 @@ public class DemoServerApplication {
 
         SpringApplication.run(DemoServerApplication.class, args);
 
-        try  {
-            ReadOption excelReadOption = new ReadOption();
-            excelReadOption.setFilePath("/Users/doheekang/Downloads/EXCEL_TEST/src/main/java/sample_data.xlsx");
-            excelReadOption.setOutputColumns("A","B","C","D","E","F");
-            excelReadOption.setStartRow(2);
+    }
 
-            List<Map<String, String>> excelContent = ExcelRead.read(excelReadOption, 0);
+    public CommandLineRunner runner(TradeRepositorty tradeRepositorty, MerchantRepository merchantRepository) throws Exception {
+        ReadOption excelReadOption = new ReadOption();
+        excelReadOption.setFilePath("/Users/doheekang/IdeaProjects/demo-server/src/main/resources/sample_data.xlsx");
+        excelReadOption.setOutputColumns("A", "B", "C", "D", "E", "F", "G", "H");
+        excelReadOption.setStartRow(2);
 
-            for(Map<String, String> article: excelContent){
-                System.out.print(article.get("A") + " ");
-                System.out.print(article.get("B") + " ");
-                System.out.print(article.get("C") + " ");
-                System.out.print(article.get("D") + " ");
-                System.out.println(article.get("E") + " ");
+
+        HashMap<Long, Merchant> merchantHashMap = new HashMap<>();
+
+
+        return (args) -> {
+            int sheetNum = 1;
+            List<Map<String, String>> excelContent;
+
+            while (true) {
+                excelContent = ExcelRead.read(excelReadOption, sheetNum);
+
+                if (excelContent == null)
+                    break;
+
+                if (sheetNum == 0) {
+                    for (Map<String, String> article : excelContent) {
+                        Trade trade = tradeRepositorty.save(Trade.builder()
+                                .id(Long.parseLong(article.get("A")))
+                                .tradeDate(article.get("B"))
+                                .tradeType(article.get("C"))
+                                .amount(article.get("D"))
+                                .fee(article.get("E"))
+                                .merchantId(merchantHashMap.get(Long.parseLong(article.get("F"))))
+                                .serviceType(article.get("G"))
+                                .tradeAccess(article.get("H"))
+                                .build());
+                    }
+
+                }
+                else if (sheetNum == 1) {
+                    for (Map<String, String> article : excelContent) {
+                        Merchant merchant = merchantRepository.save(Merchant.builder()
+                                .id(Long.parseLong(article.get("A")))
+                                .merchantName(article.get("B"))
+                                .regDate(article.get("C"))
+                                .serviceType(article.get("D"))
+                                .statusType(article.get("E"))
+                                .address(article.get("F"))
+                                .addressDetail(article.get("G"))
+                                .build());
+
+                        merchantHashMap.put(merchant.getId(), merchant);
+                    }
+                }
+
+                sheetNum--;
             }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        };
     }
 }
