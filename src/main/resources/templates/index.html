@@ -26,8 +26,12 @@
 
 <script th:inline="javascript">
 /* <![CDATA[ */
-    var infoBox = document.querySelector('#infoBox')
-    var map = new naver.maps.Map('map', {
+    const infoBox = document.querySelector('#infoBox')
+    const nameBox = $(
+        '<div style="position:absolute;z-index:1000;padding:5px 10px;background-color:white;border:solid 1px black;font-size:14px;display:none;"></div>'
+        )
+
+    const map = new naver.maps.Map('map', {
         center: new naver.maps.LatLng(37.3595704, 127.105399),
         zoom: 5,
         minZoom: 1,
@@ -36,21 +40,40 @@
           position: naver.maps.Position.TOP_RIGHT
         }
       })
-      var list = /*[[${merchantList}]]*/
+
+      nameBox.appendTo(map.getPanes().floatPane)
+
+      const list = /*[[${merchantList}]]*/
       list.forEach(el => {
         naver.maps.Service.geocode(
           {
             query: el.address
           },
-          function(status, response) {
+          (status, response) => {
             if (status !== naver.maps.Service.Status.OK) {
               return alert(response)
             }
-            var result = response.v2, // 검색 결과의 컨테이너
+            const result = response.v2, // 검색 결과의 컨테이너
               items = result.addresses // 검색 결과의 배열
-            var marker = new naver.maps.Marker({
+            const marker = new naver.maps.Marker({
               position: new naver.maps.LatLng(items[0].y, items[0].x),
               map: map
+            })
+
+
+            naver.maps.Event.addListener(marker, 'mouseover', (e) => {
+              console.log('mouseover');
+              nameBox
+                .css({
+                  display: '',
+                  left: e.offset.x,
+                  top: e.offset.y
+                })
+                .text(el.merchantName)
+            })
+
+            naver.maps.Event.addListener(marker, 'mouseout', (e) => {
+              nameBox.hide().empty()
             })
 
             naver.maps.Event.addListener(marker, 'click', function(e) {
@@ -61,8 +84,16 @@
               $.get(
                 'http://localhost:8080/map/trade',
                 { id: el.id },
-                function(data, status) {
+                (data, status) => {
                   let total = 0
+                  infoBox.innerHTML +=
+                  '<h3>' +
+                  data[0].tradeDate.substr(0, 4) +
+                  '년 ' +
+                  data[0].tradeDate.substr(4, 2) +
+                  '월 ' +
+                  data[0].tradeDate.substr(6, 2) +
+                  '일 </h3>'
                   infoBox.innerHTML += '<p> 거래건수: ' + data.length + '</p>'
                   data.forEach(el => {
                     //결제된 경우
