@@ -18,3 +18,8 @@ body {
   height: 100vh;
   z-index: 1;
 }
+
+.tradeData {
+  margin: 10px;
+  background: white;
+}

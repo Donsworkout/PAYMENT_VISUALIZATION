@@ -55,14 +55,13 @@
             }
             const result = response.v2, // 검색 결과의 컨테이너
               items = result.addresses // 검색 결과의 배열
+            // 가게 위치에 마커 표시
             const marker = new naver.maps.Marker({
               position: new naver.maps.LatLng(items[0].y, items[0].x),
               map: map
             })
 
-
             naver.maps.Event.addListener(marker, 'mouseover', (e) => {
-              console.log('mouseover');
               nameBox
                 .css({
                   display: '',
@@ -86,20 +85,23 @@
                 { id: el.id },
                 (data, status) => {
                   let total = 0
-                  infoBox.innerHTML +=
-                  '<h3>' +
-                  data[0].tradeDate.substr(0, 4) +
-                  '년 ' +
-                  data[0].tradeDate.substr(4, 2) +
-                  '월 ' +
-                  data[0].tradeDate.substr(6, 2) +
-                  '일 </h3>'
-                  infoBox.innerHTML += '<p> 거래건수: ' + data.length + '</p>'
+                  let date = `<h3> ${data[0].tradeDate.substr(0, 4)}년
+                    ${data[0].tradeDate.substr(4, 2)}월
+                    ${data[0].tradeDate.substr(6, 2)}일 </h3>`
+
+                  infoBox.innerHTML += date
+                  infoBox.innerHTML += `<p> 거래건수: ${data.length} </p>`
                   data.forEach(el => {
                     //결제된 경우
                     if(el.tradeType == 0){
                         total += Number(el.amount)
                     }
+
+                    let tradeData = `<div class="tradeData">거래 금액: ${Number(el.amount)}원<br>
+                        거래 수수료: ${Number(el.fee)}원 <br> 거래 서비스 타입: ${el.serviceType}<br>
+                        거래 접근 타입: ${el.tradeAccess}
+                        </div>`
+                    infoBox.innerHTML += tradeData
                   })
 
                   infoBox.innerHTML += '<p> 거래총액: ' + total + '</p>'
