@@ -35,6 +35,10 @@ public class Merchant implements Serializable {
     @Column
     private String addressDetail;
 
+    public Long getId() {
+        return id;
+    }
+
     @Builder
     public Merchant(Long id, String merchantName, String regDate,
                     String serviceType, String statusType, String address, String addressDetail) {

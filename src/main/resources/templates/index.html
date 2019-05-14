@@ -36,7 +36,9 @@
       })
 
       var list = /*[[ ${merchantList} ]]*/
+      console.log(list);
       list.forEach(el => {
+      console.log(el)
       naver.maps.Service.geocode(
         {
           query: el.address
