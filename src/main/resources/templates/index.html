@@ -24,6 +24,7 @@
 <div id="wrapper">
     <div id="map">
         <div id="infoBox">
+            <div id="closeBtn">X</div>
             <div id ="metaInfo"></div>
             <div id = "infoChart">
                 <div id="info"></div>
@@ -53,6 +54,10 @@
       })
 
       nameBox.appendTo(map.getPanes().floatPane)
+
+      closeBtn.addEventListener('click', () => {
+        infoBox.style.display = ''
+      })
 
       const list = /*[[${merchantList}]]*/
       list.forEach(el => {
@@ -90,10 +95,7 @@
             naver.maps.Event.addListener(marker, 'click', function(e) {
               if (infoBox.style.display == '') {
                 infoBox.style.display = 'block'
-              } else {
-                infoBox.style.display = ''
               }
-
               metaInfo.innerHTML = '<h1>' + el.merchantName + '</h1>'
               metaInfo.innerHTML += '<p>' + el.address + ' ' + el.addressDetail + '</p>'
 
