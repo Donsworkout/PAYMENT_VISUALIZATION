@@ -35,6 +35,7 @@
 
 <script th:inline="javascript">
 /* <![CDATA[ */
+    const infoBox = document.querySelector('#infoBox')
     const metaInfo = document.querySelector('#metaInfo')
     const info = document.querySelector('#info')
     const nameBox = $(
@@ -87,9 +88,14 @@
             })
 
             naver.maps.Event.addListener(marker, 'click', function(e) {
+              if (infoBox.style.display == '') {
+                infoBox.style.display = 'block'
+              } else {
+                infoBox.style.display = ''
+              }
+
               metaInfo.innerHTML = '<h1>' + el.merchantName + '</h1>'
               metaInfo.innerHTML += '<p>' + el.address + ' ' + el.addressDetail + '</p>'
-              metaInfo.innerHTML += '<hr>'
 
               $.get(
                 'http://localhost:8080/map/trade',

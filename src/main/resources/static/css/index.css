@@ -13,6 +13,7 @@ body {
 }
 
 #infoBox {
+  display: none;
   position: absolute;
   background-color: #fff;
   width: 375px;
@@ -27,9 +28,10 @@ body {
   height: 120px;
   top: 0;
   left: 0;
-  z-index: 2;
+  z-index: 1;
   background: #2DB400;
 }
+
 #infoChart {
   margin-top: 120px;
   width: 100%;
