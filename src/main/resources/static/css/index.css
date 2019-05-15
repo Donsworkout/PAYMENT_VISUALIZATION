@@ -1,5 +1,6 @@
 body {
   margin: 0;
+  text-align: center;
 }
 
 #wrapper {
@@ -13,10 +14,26 @@ body {
 
 #infoBox {
   position: absolute;
-  background-color:pink;
+  background-color: #fff;
   width: 375px;
   height: 100vh;
   z-index: 1;
+  overflow: auto;
+}
+
+#metaInfo {
+  position: fixed;
+  width: 375px;
+  height: 120px;
+  top: 0;
+  left: 0;
+  z-index: 2;
+  background: #2DB400;
+}
+#infoChart {
+  margin-top: 120px;
+  width: 100%;
+  height: auto !important;
 }
 
 .tradeData {

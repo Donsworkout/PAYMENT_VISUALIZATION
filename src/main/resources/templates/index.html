@@ -11,22 +11,32 @@
     <title>Offline Payment</title>
     <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}" />
     <link rel="stylesheet" th:href="@{/css/index.css}" />
+    <link rel="stylesheet" th:href="@{/css/c3.css}" />
     <script
             type="text/javascript"
             src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=qrxonlktn8&submodules=geocoder"
     ></script>
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <script th:src="@{/js/c3.min.js}"></script>
     <script th:src="@{/js/jquery.min.js}"></script>
 </head>
 <body>
 <div id="wrapper">
     <div id="map">
-        <div id="infoBox"></div>
+        <div id="infoBox">
+            <div id ="metaInfo"></div>
+            <div id = "infoChart">
+                <div id="info"></div>
+                <div id="chart"></div>
+            </div>
+        </div>
     </div>
 </div>
 
 <script th:inline="javascript">
 /* <![CDATA[ */
-    const infoBox = document.querySelector('#infoBox')
+    const metaInfo = document.querySelector('#metaInfo')
+    const info = document.querySelector('#info')
     const nameBox = $(
         '<div style="position:absolute;z-index:1000;padding:5px 10px;background-color:white;border:solid 1px black;font-size:14px;display:none;"></div>'
         )
@@ -55,6 +65,7 @@
             }
             const result = response.v2, // 검색 결과의 컨테이너
               items = result.addresses // 검색 결과의 배열
+
             // 가게 위치에 마커 표시
             const marker = new naver.maps.Marker({
               position: new naver.maps.LatLng(items[0].y, items[0].x),
@@ -76,9 +87,9 @@
             })
 
             naver.maps.Event.addListener(marker, 'click', function(e) {
-              infoBox.innerHTML = '<h1>' + el.merchantName + '</h1>'
-              infoBox.innerHTML += '<p>' + el.address + ' ' + el.addressDetail + '</p>'
-              infoBox.innerHTML += '<hr>'
+              metaInfo.innerHTML = '<h1>' + el.merchantName + '</h1>'
+              metaInfo.innerHTML += '<p>' + el.address + ' ' + el.addressDetail + '</p>'
+              metaInfo.innerHTML += '<hr>'
 
               $.get(
                 'http://localhost:8080/map/trade',
@@ -89,8 +100,9 @@
                     ${data[0].tradeDate.substr(4, 2)}월
                     ${data[0].tradeDate.substr(6, 2)}일 </h3>`
 
-                  infoBox.innerHTML += date
-                  infoBox.innerHTML += `<p> 거래건수: ${data.length} </p>`
+                  info.innerHTML = date
+                  info.innerHTML += `<p> 거래건수: ${data.length} </p>`
+                  const dataList = ['거래 금액']
                   data.forEach(el => {
                     //결제된 경우
                     if(el.tradeType == 0){
@@ -101,10 +113,18 @@
                         거래 수수료: ${Number(el.fee)}원 <br> 거래 서비스 타입: ${el.serviceType}<br>
                         거래 접근 타입: ${el.tradeAccess}
                         </div>`
-                    infoBox.innerHTML += tradeData
+                    info.innerHTML += tradeData
+                    dataList.push(Number(el.amount))
                   })
 
-                  infoBox.innerHTML += '<p> 거래총액: ' + total + '</p>'
+                  info.innerHTML += '<p> 거래총액: ' + total + '</p>'
+
+                  const chart = c3.generate({
+                    bindto: '#chart',
+                    data: {
+                      columns: [dataList]
+                    }
+                  })
                 }
               )
             })

@@ -34,4 +34,9 @@ public class DataRestController {
         String merchantId = request.getParameter("id");
         return tradeRepositorty.findByMerchantIdId(Long.parseLong(merchantId));
     }
+
+    @GetMapping("/allTrade")
+    public @ResponseBody List<Trade> trades(){
+        return tradeRepositorty.findAll();
+    }
 }
