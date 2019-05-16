@@ -3,4 +3,5 @@ pluginManagement {
 		gradlePluginPortal()
 	}
 }
-rootProject.name = 'fornewpay'
+
+rootProject.name = 'offline_payment_visualization'
