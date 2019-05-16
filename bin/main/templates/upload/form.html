@@ -9,15 +9,6 @@
             content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"
     />
     <title>Offline Payment</title>
-    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}" />
-    <link rel="stylesheet" th:href="@{/css/index.css}" />
-    <link rel="stylesheet" th:href="@{/css/c3.css}" />
-    <script
-            type="text/javascript"
-            src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=qrxonlktn8&submodules=geocoder"
-    ></script>
-    <script src="https://d3js.org/d3.v5.min.js"></script>
-    <script th:src="@{/js/c3.min.js}"></script>
     <script th:src="@{/js/jquery.min.js}"></script>
     <script src="http://malsup.github.com/jquery.form.js"></script> 
 </head>
@@ -58,6 +49,9 @@
 				</div>				
 			</div>
 		</form>
+		<button type="button" id="coordsSet" class="btn" onclick="setCoords()">
+			<span>좌표 업데이트</span>
+		</button>
 	</div>
 
 	<script>
@@ -90,6 +84,16 @@
 				};
 				$("#excelUploadForm").ajaxSubmit(options);
 			}
+		}
+		
+		function setCoords(){
+		    $.ajax({
+		        type: "POST",
+		        url: "/upload/coords_setting",
+		        success: function(response) {
+					alert("좌표 세팅 완료");
+		        }
+		    });	
 		}
 	</script>
 

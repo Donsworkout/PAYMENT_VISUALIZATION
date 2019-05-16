@@ -20,31 +20,31 @@ import lombok.NoArgsConstructor;
 public class Merchant implements Serializable {
     @Id
     @Column
-    private Long id;
+    public Long id;
 
     @Column
-    private String merchantName;
+    public String merchantName;
 
     @Column
-    private Date regDate;
+    public Date regDate;
     
 	@Column
-    private String serviceType;
+    public String serviceType;
 
     @Column
-    private String statusType;
+    public String statusType;
 
     @Column
-    private String address;
+    public String address;
 
     @Column
-    private String addressDetail;
+    public String addressDetail;
 
     @Column
-    private Double xPos;
+    public Double xPos;
 
     @Column
-    private Double yPos;
+    public Double yPos;
 
 	public String getMerchantName() {
 		return merchantName;

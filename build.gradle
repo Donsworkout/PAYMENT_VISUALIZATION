@@ -36,7 +36,7 @@ dependencies {
 	compile('org.springframework.boot:spring-boot-starter-security')
 	compile('com.fasterxml.jackson.datatype:jackson-datatype-jsr310')
 	compile('javax.xml.bind:jaxb-api:2.3.0')
-
+	compile "com.monitorjbl:xlsx-streamer:2.1.0"
 	runtime('org.springframework.boot:spring-boot-devtools')
 	runtime('mysql:mysql-connector-java')
 	runtime('com.h2database:h2')
