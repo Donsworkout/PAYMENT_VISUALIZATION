@@ -8,10 +8,14 @@ body {
 }
 
 #map {
-  width:100%;
-  height:100vh;
+  width:70%;
+  height:60vh;
+  margin: 0 auto;
 }
 
+.table {
+  margin-top: 20px;
+}
 #closeBtn {
   position: absolute;
   cursor: pointer;

@@ -9,187 +9,278 @@
             content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"
     />
     <title>Offline Payment</title>
-    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"/>
     <link rel="stylesheet" th:href="@{/css/index.css}" />
     <link rel="stylesheet" th:href="@{/css/c3.css}" />
     <script
             type="text/javascript"
             src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=qrxonlktn8&submodules=geocoder"
     ></script>
-    <script src="https://d3js.org/d3.v5.min.js"></script>
-    <script th:src="@{/js/c3.min.js}"></script>
+    <script th:src="@{/js/accidentdeath.js}"></script>
+    <script th:src="@{/js/MarkerClustering.js}"></script>
     <script th:src="@{/js/jquery.min.js}"></script>
 </head>
 <body>
 <div id="wrapper">
-    <div id="map">
-        <div id="infoBox">
-            <div id="closeBtn">X</div>
-            <div id ="metaInfo"></div>
-            <div id = "infoChart">
-                <div id="info"></div>
-                <div id="chart"></div>
-            </div>
-        </div>
-    </div>
+    <div id="map"></div>
+    <table class="table">
+        <thead class="thead-dark">
+        <tr>
+            <th scope="col">Name</th>
+            <th scope="col">Amount</th>
+            <th scope="col">Service type</th>
+            <th scope="col">TradeAccess</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>trade.merchantname</td>
+            <td>trade.amount</td>
+            <td>trade.serviceType</td>
+            <td>trade.serviceType</td>
+        </tr>
+        </tbody>
+    </table>
 </div>
 
 <script th:inline="javascript">
 /* <![CDATA[ */
-
-    const infoBox = document.querySelector('#infoBox')
-    const metaInfo = document.querySelector('#metaInfo')
-    const closeBtn = document.querySelector('#closeBtn')
-    const info = document.querySelector('#info')
-    const chart = document.querySelector('#chart')
-    const nameBox = $(
-        '<div style="position:absolute;z-index:1000;padding:5px 10px;background-color:white;border:solid 1px black;font-size:14px;display:none;"></div>'
-        )
-
     const map = new naver.maps.Map('map', {
-        center: new naver.maps.LatLng(37.3595704, 127.105399),
-        zoom: 5,
-        minZoom: 1,
+        zoom: 3,
+        center: new naver.maps.LatLng(36.2253017, 127.6460516),
         zoomControl: true,
         zoomControlOptions: {
-          position: naver.maps.Position.TOP_RIGHT
+          position: naver.maps.Position.TOP_LEFT,
+          style: naver.maps.ZoomControlStyle.SMALL
         }
-      })
-
-    nameBox.appendTo(map.getPanes().floatPane)
-
-    closeBtn.addEventListener('click', () => {
-        infoBox.style.display = ''
     })
 
-    const list = /*[[${merchantList}]]*/
+    const markers = [],
+        data = accidentDeath.searchResult.accidentDeath
 
-    list.forEach(el => {
-        naver.maps.Service.geocode(
-        {
-            query: el.address
-        },
-        (status, response) => {
-            if (status !== naver.maps.Service.Status.OK) {
-            return alert(response)
-        }
-        const result = response.v2, // 검색 결과의 컨테이너
-        items = result.addresses // 검색 결과의 배열
-
-        // 가게 위치에 마커 표시
-        const marker = new naver.maps.Marker({
-            position: new naver.maps.LatLng(items[0].y, items[0].x),
-            map: map
-        })
-
-        naver.maps.Event.addListener(marker, 'mouseover', (e) => {
-            nameBox
-            .css({
-                display: '',
-                left: e.offset.x,
-                top: e.offset.y
-            })
-            .text(el.merchantName)
-        })
-
-        naver.maps.Event.addListener(marker, 'mouseout', (e) => {
-            nameBox.hide().empty()
-        })
-
-        naver.maps.Event.addListener(marker, 'click', function(e) {
-        // 닫혀있으면 열어줌
-        if (infoBox.style.display == '') {
-          infoBox.style.display = 'block'
-        }
-
-        // 정보 초기화
-        metaInfo.innerHTML = ''
-        info.innerHTML = ''
-        chart.innerHTML = ''
-
-        // 가게 정보 (Meta data)
-        const merchantName = document.createElement('h1')
-        const merchantNameContent = document.createTextNode(
-          el.merchantName
-        )
-        const merchantAddress = document.createElement('p')
-        const merchantAddressContent = document.createTextNode(
-          el.address + ' ' + el.addressDetail
-        )
-        merchantName.appendChild(merchantNameContent)
-        merchantAddress.appendChild(merchantAddressContent)
-
-        metaInfo.appendChild(merchantName)
-        metaInfo.appendChild(merchantAddress)
-
-        $.get(
-          'http://localhost:8080/map/trade',
-          { id: el.id },
-          (data, status) => {
-            let total = 0
-
-            // 날짜 정보
-            let date = document.createElement('h3')
-            let dateContent = document.createTextNode(`${data[0].tradeDate.substr(0, 4)}년 ${data[0].tradeDate.substr(4, 2)}월 ${data[0].tradeDate.substr(6, 2)}일`)
-
-            date.appendChild(dateContent)
-            info.appendChild(date)
-
-            // 일일 거래 건수 정보
-            let totalNum = document.createElement('span')
-            let totalNumContent = document.createTextNode(
-              `일일 거래건수: ${data.length}`
-            )
-
-            totalNum.appendChild(totalNumContent)
-            info.appendChild(totalNum)
-
-            // 거래 정보 리스트
-            let tradeDataList = document.createElement('div')
-            tradeDataList.setAttribute('id', 'tradeDataList')
-            tradeDataList.style.display = ''
-
-            const dataList = ['거래 금액']
-
-            data.forEach(el => {
-              //결제된 경우
-              if(el.tradeType == 0){
-                  total += Number(el.amount)
-              }
-
-              // 리스트 원소
-              let tradeData = document.createElement('div')
-              tradeData.setAttribute('class', 'tradeData')
-              let tradeDataContent = document.createTextNode(`거래 금액: ${Number(el.amount)}원
-              거래 수수료: ${Number(el.fee)}원
-              거래 서비스 타입: ${el.serviceType}
-              거래 접근 타입: ${el.tradeAccess}`
-              )
-
-              tradeData.appendChild(tradeDataContent)
-              tradeDataList.appendChild(tradeData)
-
-              dataList.push(Number(el.amount))
-            })
-
-            info.appendChild(tradeDataList)
-            let totalAmount = document.createElement('div')
-            let totalAmountContent = document.createTextNode(`거래 총액: ${total}원`)
-
-            totalAmount.appendChild(totalAmountContent)
-            info.appendChild(totalAmount)
-
-            const chart = c3.generate({
-              bindto: '#chart',
-              data: {
-                columns: [dataList]
-              }
-            })
+      for (var i = 0, ii = data.length; i < ii; i++) {
+        var spot = data[i],
+          latlng = new naver.maps.LatLng(spot.grd_la, spot.grd_lo),
+          marker = new naver.maps.Marker({
+            position: latlng,
+            draggable: true
           })
-        })
+
+        markers.push(marker)
+      }
+
+    const htmlMarker1 = {
+          content:
+            '<div style="cursor:pointer;width:40px;height:40px;line-height:42px;font-size:10px;color:white;text-align:center;font-weight:bold;background:url(https://www.sccpre.cat/png/big/35/357643_pink-circle-png.png);background-size:contain;"></div>',
+          size: N.Size(40, 40),
+          anchor: N.Point(20, 20)
+        },
+        htmlMarker2 = {
+          content:
+            '<div style="cursor:pointer;width:40px;height:40px;line-height:42px;font-size:10px;color:white;text-align:center;font-weight:bold;background:url(https://www.sccpre.cat/png/big/35/357643_pink-circle-png.png);background-size:contain;"></div>',
+          size: N.Size(40, 40),
+          anchor: N.Point(20, 20)
+        },
+        htmlMarker3 = {
+          content:
+            '<div style="cursor:pointer;width:40px;height:40px;line-height:42px;font-size:10px;color:white;text-align:center;font-weight:bold;background:url(https://www.sccpre.cat/png/big/35/357643_pink-circle-png.png);background-size:contain;"></div>',
+          size: N.Size(40, 40),
+          anchor: N.Point(20, 20)
+        },
+        htmlMarker4 = {
+          content:
+            '<div style="cursor:pointer;width:40px;height:40px;line-height:42px;font-size:10px;color:white;text-align:center;font-weight:bold;background:url(https://www.sccpre.cat/png/big/35/357643_pink-circle-png.png);background-size:contain;"></div>',
+          size: N.Size(40, 40),
+          anchor: N.Point(20, 20)
+        },
+        htmlMarker5 = {
+          content:
+            '<div style="cursor:pointer;width:40px;height:40px;line-height:42px;font-size:10px;color:white;text-align:center;font-weight:bold;background:url(https://www.sccpre.cat/png/big/35/357643_pink-circle-png.png);background-size:contain;"></div>',
+          size: N.Size(40, 40),
+          anchor: N.Point(20, 20)
+        }
+
+      const markerClustering = new MarkerClustering({
+        minClusterSize: 2,
+        maxZoom: 8,
+        map: map,
+        markers: markers,
+        disableClickZoom: false,
+        gridSize: 120,
+        icons: [
+          htmlMarker1,
+          htmlMarker2,
+          htmlMarker3,
+          htmlMarker4,
+          htmlMarker5
+        ],
+        indexGenerator: [10, 100, 200, 500, 1000],
+        stylingFunction: function(clusterMarker, count) {
+          $(clusterMarker.getElement())
+            .find('div:first-child')
+            .text(count)
+        }
       })
-    })
+
 /* ]]> */
 </script>
+
+<!--<script th:inline="javascript">-->
+<!--/* <![CDATA[ */-->
+
+<!--    const infoBox = document.querySelector('#infoBox')-->
+<!--    const metaInfo = document.querySelector('#metaInfo')-->
+<!--    const closeBtn = document.querySelector('#closeBtn')-->
+<!--    const info = document.querySelector('#info')-->
+<!--    const chart = document.querySelector('#chart')-->
+<!--    const nameBox = $(-->
+<!--        '<div style="position:absolute;z-index:1000;padding:5px 10px;background-color:white;border:solid 1px black;font-size:14px;display:none;"></div>'-->
+<!--        )-->
+
+<!--    const map = new naver.maps.Map('map', {-->
+<!--        center: new naver.maps.LatLng(37.3595704, 127.105399),-->
+<!--        zoom: 5,-->
+<!--        minZoom: 1,-->
+<!--        zoomControl: true,-->
+<!--        zoomControlOptions: {-->
+<!--          position: naver.maps.Position.TOP_RIGHT-->
+<!--        }-->
+<!--      })-->
+
+<!--    nameBox.appendTo(map.getPanes().floatPane)-->
+
+<!--    closeBtn.addEventListener('click', () => {-->
+<!--        infoBox.style.display = ''-->
+<!--    })-->
+
+<!--    const list = /*[[${merchantList}]]*/-->
+
+<!--    list.forEach(el => {-->
+<!--        naver.maps.Service.geocode(-->
+<!--        {-->
+<!--            query: el.address-->
+<!--        },-->
+<!--        (status, response) => {-->
+<!--            if (status !== naver.maps.Service.Status.OK) {-->
+<!--            return alert(response)-->
+<!--        }-->
+<!--        const result = response.v2, // 검색 결과의 컨테이너-->
+<!--        items = result.addresses // 검색 결과의 배열-->
+
+<!--        // 가게 위치에 마커 표시-->
+<!--        const marker = new naver.maps.Marker({-->
+<!--            position: new naver.maps.LatLng(items[0].y, items[0].x),-->
+<!--            map: map-->
+<!--        })-->
+
+<!--        naver.maps.Event.addListener(marker, 'mouseover', (e) => {-->
+<!--            nameBox-->
+<!--            .css({-->
+<!--                display: '',-->
+<!--                left: e.offset.x,-->
+<!--                top: e.offset.y-->
+<!--            })-->
+<!--            .text(el.merchantName)-->
+<!--        })-->
+
+<!--        naver.maps.Event.addListener(marker, 'mouseout', (e) => {-->
+<!--            nameBox.hide().empty()-->
+<!--        })-->
+
+<!--        naver.maps.Event.addListener(marker, 'click', function(e) {-->
+<!--        // 닫혀있으면 열어줌-->
+<!--        if (infoBox.style.display == '') {-->
+<!--          infoBox.style.display = 'block'-->
+<!--        }-->
+
+<!--        // 정보 초기화-->
+<!--        metaInfo.innerHTML = ''-->
+<!--        info.innerHTML = ''-->
+<!--        chart.innerHTML = ''-->
+
+<!--        // 가게 정보 (Meta data)-->
+<!--        const merchantName = document.createElement('h1')-->
+<!--        const merchantNameContent = document.createTextNode(-->
+<!--          el.merchantName-->
+<!--        )-->
+<!--        const merchantAddress = document.createElement('p')-->
+<!--        const merchantAddressContent = document.createTextNode(-->
+<!--          el.address + ' ' + el.addressDetail-->
+<!--        )-->
+<!--        merchantName.appendChild(merchantNameContent)-->
+<!--        merchantAddress.appendChild(merchantAddressContent)-->
+
+<!--        metaInfo.appendChild(merchantName)-->
+<!--        metaInfo.appendChild(merchantAddress)-->
+
+<!--        $.get(-->
+<!--          'http://localhost:8080/map/trade',-->
+<!--          { id: el.id },-->
+<!--          (data, status) => {-->
+<!--            let total = 0-->
+
+<!--            // 날짜 정보-->
+<!--            let date = document.createElement('h3')-->
+<!--            let dateContent = document.createTextNode(`${data[0].tradeDate.substr(0, 4)}년 ${data[0].tradeDate.substr(4, 2)}월 ${data[0].tradeDate.substr(6, 2)}일`)-->
+
+<!--            date.appendChild(dateContent)-->
+<!--            info.appendChild(date)-->
+
+<!--            // 일일 거래 건수 정보-->
+<!--            let totalNum = document.createElement('span')-->
+<!--            let totalNumContent = document.createTextNode(-->
+<!--              `일일 거래건수: ${data.length}`-->
+<!--            )-->
+
+<!--            totalNum.appendChild(totalNumContent)-->
+<!--            info.appendChild(totalNum)-->
+
+<!--            // 거래 정보 리스트-->
+<!--            let tradeDataList = document.createElement('div')-->
+<!--            tradeDataList.setAttribute('id', 'tradeDataList')-->
+<!--            tradeDataList.style.display = ''-->
+
+<!--            const dataList = ['거래 금액']-->
+
+<!--            data.forEach(el => {-->
+<!--              //결제된 경우-->
+<!--              if(el.tradeType == 0){-->
+<!--                  total += Number(el.amount)-->
+<!--              }-->
+
+<!--              // 리스트 원소-->
+<!--              let tradeData = document.createElement('div')-->
+<!--              tradeData.setAttribute('class', 'tradeData')-->
+<!--              let tradeDataContent = document.createTextNode(`거래 금액: ${Number(el.amount)}원-->
+<!--              거래 수수료: ${Number(el.fee)}원-->
+<!--              거래 서비스 타입: ${el.serviceType}-->
+<!--              거래 접근 타입: ${el.tradeAccess}`-->
+<!--              )-->
+
+<!--              tradeData.appendChild(tradeDataContent)-->
+<!--              tradeDataList.appendChild(tradeData)-->
+
+<!--              dataList.push(Number(el.amount))-->
+<!--            })-->
+
+<!--            info.appendChild(tradeDataList)-->
+<!--            let totalAmount = document.createElement('div')-->
+<!--            let totalAmountContent = document.createTextNode(`거래 총액: ${total}원`)-->
+
+<!--            totalAmount.appendChild(totalAmountContent)-->
+<!--            info.appendChild(totalAmount)-->
+
+<!--            const chart = c3.generate({-->
+<!--              bindto: '#chart',-->
+<!--              data: {-->
+<!--                columns: [dataList]-->
+<!--              }-->
+<!--            })-->
+<!--          })-->
+<!--        })-->
+<!--      })-->
+<!--    })-->
+<!--/* ]]> */-->
+<!--</script>-->
 </body>
 </html>
