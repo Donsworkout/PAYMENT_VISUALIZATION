@@ -58,7 +58,7 @@ public class DataUploadService {
 	public void loadDailyStatic(List<Trade> tradeList) throws Exception {
 
 		for(Trade trade:tradeList) {
-			Optional<DailyStatic> dailyStaticOptional = dailyStaticRepository.findByMerchantIdAndtradeDate(trade.getMerchantId(), trade.getTradeDate());
+			Optional<DailyStatic> dailyStaticOptional = dailyStaticRepository.findByMerchantIdAndtradeDate(trade.getMerchantId().getId(), trade.getTradeDate());
 			// 이미 데이터가 있는 경우
 			if (dailyStaticOptional.isPresent()) {
 				DailyStatic dailyStatic = dailyStaticOptional.get();
