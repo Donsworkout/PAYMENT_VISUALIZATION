@@ -9,6 +9,6 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface TradeRepositorty extends JpaRepository<Trade,Long> {
+public interface TradeRepository extends JpaRepository<Trade,Long> {
     List<Trade> findByMerchantIdId(Long id);
 }

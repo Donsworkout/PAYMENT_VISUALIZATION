@@ -3,4 +3,4 @@ pluginManagement {
 		gradlePluginPortal()
 	}
 }
-rootProject.name = 'demo-server'
+rootProject.name = 'offline_payment_visualization'
