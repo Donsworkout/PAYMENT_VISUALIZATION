@@ -16,7 +16,7 @@ public class DataBaseUploadService {
 
     public void uploadDailyStatic(List<Trade> tradeList) throws Exception {
         for(Trade trade:tradeList) {
-            Optional<DailyStatic> dailyStaticOptional = dailyStaticRepository.findByMerchantIdAndTradeDate(trade.getMerchantId().getId(), trade.getTradeDate());
+            Optional<DailyStatic> dailyStaticOptional = dailyStaticRepository.findByMerchantIdAndTradeDate(trade.getMerchantId(), trade.getTradeDate());
             // 이미 데이터가 있는 경우
             if (dailyStaticOptional.isPresent()) {
                 DailyStatic dailyStatic = dailyStaticOptional.get();
@@ -24,6 +24,7 @@ public class DataBaseUploadService {
                 dailyStatic.setFrequency(dailyStatic.getFrequency() + 1);
                 dailyStaticRepository.save(dailyStatic);
             } else {
+                System.out.println("지랄났네");
                 DailyStatic ds = new DailyStatic();
                 ds.setTradeDate(trade.getTradeDate());
                 ds.setMerchantId(trade.getMerchantId());

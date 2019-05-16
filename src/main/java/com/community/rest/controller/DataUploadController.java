@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 
 import com.community.rest.repository.TradeRepository;
+import com.community.rest.service.DataBaseUploadService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,6 +22,9 @@ public class DataUploadController {
 	DataUploadService dataUploadService = new DataUploadService();
 
     @Autowired
+    DataBaseUploadService dataBaseUploadService = new DataBaseUploadService();
+
+    @Autowired
     TradeRepository tradeRepositorty;
 
 	@GetMapping("")
@@ -36,7 +40,7 @@ public class DataUploadController {
         if(excelFile==null || excelFile.isEmpty()){
             throw new RuntimeException("엑셀파일을 선택 해 주세요.");
         }
-        File destFile = new File("/Users/donsdev/spring_workspace/upload_folder/" + excelFile.getOriginalFilename()); 
+        File destFile = new File("/Users/doheeKang/Desktop" + excelFile.getOriginalFilename());
         //File destFile = new File("./src/main/resources/static/files/" + excelFile.getOriginalFilename());
         try{
             excelFile.transferTo(destFile);
@@ -44,6 +48,9 @@ public class DataUploadController {
             throw new RuntimeException(e.getMessage(),e);
         }
         dataUploadService.excelUpload(destFile, sheet_type);
+
+        dataBaseUploadService.uploadDailyStatic(tradeRepositorty.findAll());
         return "redirect:/upload";
     }
+
 }
