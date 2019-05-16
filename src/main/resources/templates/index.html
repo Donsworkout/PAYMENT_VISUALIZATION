@@ -26,10 +26,10 @@
     <table class="table">
         <thead class="thead-dark">
         <tr>
-            <th scope="col">Name</th>
-            <th scope="col">Amount</th>
-            <th scope="col">Service type</th>
-            <th scope="col">TradeAccess</th>
+            <th scope="col">Name <span val="name" class="sort">정렬</span></th>
+            <th scope="col">Amount <span class="sort">정렬</span></th>
+            <th scope="col">Service type <span class="sort">정렬</span></th>
+            <th scope="col">TradeAccess <span class="sort">정렬</span></th>
         </tr>
         </thead>
         <tbody>
@@ -45,6 +45,25 @@
 
 <script th:inline="javascript">
 /* <![CDATA[ */
+    // 모든 마커가 표시되게 zoom level을 정하는 로직
+
+    // level 1에서 지도가 표시할 수 있는 위경도 차이
+<!--    let biggestLatDiff = 8.753656900000003-->
+<!--    let biggestLngDiff = 14.771484400000006-->
+<!--    let zoomlevel = 1-->
+
+    // latDiff: 주어진 마커들의 최대최소 위도차
+    // lngDiff: 주어진 마커들의 최대최소 경도차
+<!--    while(biggestLatDiff > latDiff || biggestLngDiff > lngDiff) {-->
+<!--        zoom++;-->
+<!--        lat /= 2;-->
+<!--        lng /= 2;-->
+<!--    }-->
+<!--    zoom&#45;&#45;;-->
+<!--    let centerLat = minLat + latDiff/2-->
+<!--    let centerLng = minLng + lngDiff/2-->
+
+
     const map = new naver.maps.Map('map', {
         zoom: 3,
         center: new naver.maps.LatLng(36.2253017, 127.6460516),
