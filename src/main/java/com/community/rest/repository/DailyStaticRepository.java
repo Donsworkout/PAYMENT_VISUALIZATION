@@ -11,4 +11,5 @@ import java.util.List;
 @Repository
 public interface DailyStaticRepository extends JpaRepository<DailyStatic, Long> {
     List<DailyStatic> findByDate(Date date);
+    DailyStatic findByMerchantIdAndtradeDate(String merchantId, Date tradeDate);
 }

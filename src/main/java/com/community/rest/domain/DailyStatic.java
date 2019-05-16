@@ -14,6 +14,7 @@ import java.util.Date;
 @Table
 public class DailyStatic implements Serializable {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column
     private Long id;
 
@@ -29,13 +30,29 @@ public class DailyStatic implements Serializable {
     private Integer amount;
 
     @Column
-    private Integer frequency;
+    private Long frequency;
 
-    public DailyStatic(Long id, Date tradeDate, Merchant merchantId, Integer amount, Integer frequency) {
+    public DailyStatic(Long id, Date tradeDate, Merchant merchantId, Integer amount, Long frequency) {
         this.id = id;
         this.tradeDate = tradeDate;
         this.merchantId = merchantId;
         this.amount = amount;
+        this.frequency = frequency;
+    }
+
+    public void setTradeDate(Date tradeDate) {
+        this.tradeDate = tradeDate;
+    }
+
+    public void setMerchantId(Merchant merchantId) {
+        this.merchantId = merchantId;
+    }
+
+    public void setAmount(Integer amount) {
+        this.amount = amount;
+    }
+
+    public void setFrequency(Long frequency) {
         this.frequency = frequency;
     }
 }
