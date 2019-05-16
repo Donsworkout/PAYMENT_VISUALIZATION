@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @Controller
-@RequestMapping("/map") //API URL 경로를 /map으로 정의
+@RequestMapping("/map") //API URL
 public class DataRestController {
 
     @Autowired
@@ -23,7 +23,7 @@ public class DataRestController {
     @Autowired
     TradeRepositorty tradeRepositorty;
 
-    @GetMapping({"","/"})
+   @GetMapping({"","/"})
     public String board(Model model) {
         model.addAttribute("merchantList", merchantRepository.findAll());
         return "/index";
@@ -39,4 +39,12 @@ public class DataRestController {
     public @ResponseBody List<Trade> trades(){
         return tradeRepositorty.findAll();
     }
+    
+    @GetMapping("/byDay")
+    public String dayBd(Model model) {
+    	 //model.addAttribute("merchantList", merchantRepository.findAll());
+    	 //model.addAttribute("tList",tradeRepositorty.findAll());
+         return "/dayView";
+    }
+    
 }
