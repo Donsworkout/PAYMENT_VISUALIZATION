@@ -72,11 +72,7 @@ public class Trade implements Serializable {
 		this.tradeAccess = tradeAccess;
 	}
 
-	public Trade() {
-		
-	}
-	
-	
+
 	public Long getId() {
 		return id;
 	}

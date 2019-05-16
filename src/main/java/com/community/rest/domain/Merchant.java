@@ -8,8 +8,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import org.springframework.data.geo.Point;
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -117,12 +115,8 @@ public class Merchant implements Serializable {
     public Long getId() {
         return id;
     }
-    
-    
-    public Merchant() {
-    	
-    }
-    
+
+
 	public Merchant(Long id, String merchantName, Date regDate, String serviceType, String statusType, String address,
 			String addressDetail, double xPos, double yPos) {
 		super();
