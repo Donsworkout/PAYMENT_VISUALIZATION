@@ -28,8 +28,8 @@
         <thead class="thead-dark">
         <tr>
             <th scope="col">Name</th>
-            <th scope="col">Amount</th>
             <th scope="col">Frequency</th>
+            <th scope="col">Amount</th>
         </tr>
         </thead>
         <tbody class="avoid-sort">
@@ -41,11 +41,11 @@
         </tbody>
 
         <tbody>
-<!--        <tr th:each="merchantTrade: ${merchantTradeInfoList}">-->
-<!--            <td th:text="${merchantTrade.merchantName}"></td>-->
-<!--            <td th:text="${merchantTrade.frequency}"></td>-->
-<!--            <td th:text="${merchantTrade.amount}"></td>-->
-<!--        </tr>-->
+        <tr th:each="merchantTrade: ${merchantTradeInfoList}">
+            <td th:text="${merchantTrade.merchantId.merchantName}"></td>
+            <td th:text="${merchantTrade.frequency}"></td>
+            <td th:text="${merchantTrade.amount}"></td>
+        </tr>
         </tbody>
     </table>
     </div>
@@ -53,7 +53,7 @@
 
 <script th:inline="javascript">
 /* <![CDATA[ */
-
+    console.log(/*[[${merchantTradeInfoList}]]*/)
     const amountSort = document.querySelector('.amount');
     const frequencySort = document.querySelector('.frequency');
 
