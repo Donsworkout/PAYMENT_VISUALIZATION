@@ -16,30 +16,36 @@
             type="text/javascript"
             src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=qrxonlktn8&submodules=geocoder"
     ></script>
-    <script th:src="@{/js/accidentdeath.js}"></script>
     <script th:src="@{/js/MarkerClustering.js}"></script>
     <script th:src="@{/js/jquery.min.js}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.9.1/jquery.tablesorter.min.js"></script>
 </head>
 <body>
 <div id="wrapper">
     <div id="map"></div>
     <div id="infoTable">
-    <table class="table">
+    <table  id="sampleTable" class="table tablesorter">
         <thead class="thead-dark">
         <tr>
-            <th scope="col">Name <a href="/map" class="sort">정렬</a></th>
-            <th scope="col">Amount <a href="/map" class="sort">정렬</a></th>
-            <th scope="col">Service type <a href="/map" class="sort">정렬</a></th>
-            <th scope="col">TradeAccess <a href="/map" class="sort">정렬</a></th>
+            <th scope="col">Name</th>
+            <th scope="col">Amount</th>
+            <th scope="col">Frequency</th>
         </tr>
         </thead>
+        <tbody class="avoid-sort">
+            <tr>
+                <td><b>총 합</b></td>
+                <td><b>100</b></td>
+                <td><b>100</b></td>
+            </tr>
+        </tbody>
+
         <tbody>
-        <tr th:each="merchant: ${merchantList}">
-            <td th:text="${merchant.merchantName}"></td>
-            <td th:text="${merchant.address}"></td>
-            <td th:text="${merchant.serviceType}"></td>
-            <td th:text="${merchant.statusType}"></td>
-        </tr>
+<!--        <tr th:each="merchantTrade: ${merchantTradeInfoList}">-->
+<!--            <td th:text="${merchantTrade.merchantName}"></td>-->
+<!--            <td th:text="${merchantTrade.frequency}"></td>-->
+<!--            <td th:text="${merchantTrade.amount}"></td>-->
+<!--        </tr>-->
         </tbody>
     </table>
     </div>
@@ -64,9 +70,10 @@
 <!--    zoom&#45;&#45;;-->
 <!--    let centerLat = minLat + latDiff/2-->
 <!--    let centerLng = minLng + lngDiff/2-->
-
-
-
+    const amountSort = document.querySelector('.amount');
+    const frequencySort = document.querySelector('.frequency');
+    const sortData = document.querySelector('#sortData');
+    console.log(sortData);
     const map = new naver.maps.Map('map', {
         zoom: 3,
         center: new naver.maps.LatLng(36.2253017, 127.6460516),
@@ -80,9 +87,19 @@
     const markers = [],
         data = /*[[${merchantList}]]*/
 
+
+    $(function() {
+      $("table").tablesorter({
+        theme : 'blue',
+        cssInfoBlock : "avoid-sort",
+        widgets: [ 'zebra' ]
+      });
+    });
+
+
+console.log(data);
       for(let i=0; i<data.length; i++) {
         let latlng = new naver.maps.LatLng(data[i].yPos, data[i].xPos);
-        console.log(data[i].xPos, data[i].yPos);
         let marker = new naver.maps.Marker({
             position: latlng,
             draggable: true

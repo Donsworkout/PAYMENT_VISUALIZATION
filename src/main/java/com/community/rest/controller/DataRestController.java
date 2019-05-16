@@ -26,6 +26,7 @@ public class DataRestController {
    @GetMapping({"","/"})
     public String board(Model model) {
         model.addAttribute("merchantList", merchantRepository.findAll());
+        //merchantTradeInfoList라고 해당 날자에 해당하는 가게명, 총합, 총 거래수를 넘겨주어야함
         return "/index";
     }
 
