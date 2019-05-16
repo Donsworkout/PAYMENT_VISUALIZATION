@@ -53,27 +53,15 @@
 
 <script th:inline="javascript">
 /* <![CDATA[ */
-    // 모든 마커가 표시되게 zoom level을 정하는 로직
 
-    // level 1에서 지도가 표시할 수 있는 위경도 차이
-<!--    let biggestLatDiff = 8.753656900000003-->
-<!--    let biggestLngDiff = 14.771484400000006-->
-<!--    let zoomlevel = 1-->
-
-    // latDiff: 주어진 마커들의 최대최소 위도차
-    // lngDiff: 주어진 마커들의 최대최소 경도차
-<!--    while(biggestLatDiff > latDiff || biggestLngDiff > lngDiff) {-->
-<!--        zoom++;-->
-<!--        lat /= 2;-->
-<!--        lng /= 2;-->
-<!--    }-->
-<!--    zoom&#45;&#45;;-->
-<!--    let centerLat = minLat + latDiff/2-->
-<!--    let centerLng = minLng + lngDiff/2-->
     const amountSort = document.querySelector('.amount');
     const frequencySort = document.querySelector('.frequency');
-    const sortData = document.querySelector('#sortData');
-    console.log(sortData);
+
+    let bound = new naver.maps.LatLngBounds(
+                    new naver.maps.LatLng(37.3595669, 126.976034),
+                    new naver.maps.LatLng(37.5632597, 127.1054065)
+                );
+
     const map = new naver.maps.Map('map', {
         zoom: 3,
         center: new naver.maps.LatLng(36.2253017, 127.6460516),
@@ -84,10 +72,11 @@
         }
     })
 
+    map.fitBounds(bound);
     const markers = [],
         data = /*[[${merchantList}]]*/
 
-
+    console.log(data);
     $(function() {
       $("table").tablesorter({
         theme : 'blue',
@@ -96,8 +85,6 @@
       });
     });
 
-
-console.log(data);
       for(let i=0; i<data.length; i++) {
         let latlng = new naver.maps.LatLng(data[i].yPos, data[i].xPos);
         let marker = new naver.maps.Marker({
