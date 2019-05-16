@@ -24,7 +24,6 @@ public class DataBaseUploadService {
                 dailyStatic.setFrequency(dailyStatic.getFrequency() + 1);
                 dailyStaticRepository.save(dailyStatic);
             } else {
-                System.out.println("지랄났네");
                 DailyStatic ds = new DailyStatic();
                 ds.setTradeDate(trade.getTradeDate());
                 ds.setMerchantId(trade.getMerchantId());

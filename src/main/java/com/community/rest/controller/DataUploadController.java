@@ -49,7 +49,6 @@ public class DataUploadController {
         }
         dataUploadService.excelUpload(destFile, sheet_type);
 
-        dataBaseUploadService.uploadDailyStatic(tradeRepositorty.findAll());
         return "redirect:/upload";
     }
 

@@ -11,12 +11,10 @@
     <title>Offline Payment</title>
     <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}" />
     <link rel="stylesheet" th:href="@{/css/index.css}" />
-    <link rel="stylesheet" th:href="@{/css/c3.css}" />
     <script
             type="text/javascript"
             src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=qrxonlktn8&submodules=geocoder"
     ></script>
-    <script src="https://d3js.org/d3.v5.min.js"></script>
     <script th:src="@{/js/c3.min.js}"></script>
     <script th:src="@{/js/jquery.min.js}"></script>
     <script src="http://malsup.github.com/jquery.form.js"></script> 
@@ -55,12 +53,17 @@
 					<button type="button" id="addExcelImpoartBtn" class="btn" onclick="check()">
 						<span>업로드</span>
 					</button>
+
 				</div>				
 			</div>
 		</form>
+		<button type="button" id="addDatabase" class="btn">
+			<span>DB 생성하기</span>
+		</button>
 	</div>
 
 	<script>
+		const button = document.querySelector('#addDatabase')
 		function checkFileType(filePath) {
 			var fileFormat = filePath.split(".");
 			if (fileFormat.indexOf("xlsx") > -1) {
@@ -70,6 +73,17 @@
 			}
 
 		}
+
+		button.addEventListener('click', () => {
+		console.log('클릭')
+			    $.ajax({
+				  type: "GET",
+				  url: "http://localhost:8080/data",
+				  success: function(response) {
+			 		alert("좌표 세팅 완료");
+					}
+				});
+		})
 
 		function check() {
 			var file = $("#excelFile").val();

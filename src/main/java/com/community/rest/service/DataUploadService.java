@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import com.community.rest.domain.DailyStatic;
+import com.community.rest.repository.DailyStaticRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,6 +31,8 @@ public class DataUploadService {
 	@Autowired
 	private CoordsParsingService coordsParsingService;
 
+	@Autowired
+	private DailyStaticRepository dailyStaticRepository;
 	
 	public void excelUpload(File destFile, String type) throws Exception {
 		
@@ -50,6 +54,7 @@ public class DataUploadService {
 		}
 
 	}
+
 
 	public void loadTrade(ExcelReadOption excelReadOption) throws NumberFormatException {
 		if(tradeRepository.count() > 1) {
