@@ -23,24 +23,26 @@
 <body>
 <div id="wrapper">
     <div id="map"></div>
+    <div id="infoTable">
     <table class="table">
         <thead class="thead-dark">
         <tr>
-            <th scope="col">Name <span val="name" class="sort">정렬</span></th>
-            <th scope="col">Amount <span class="sort">정렬</span></th>
-            <th scope="col">Service type <span class="sort">정렬</span></th>
-            <th scope="col">TradeAccess <span class="sort">정렬</span></th>
+            <th scope="col">Name <a href="/map" class="sort">정렬</a></th>
+            <th scope="col">Amount <a href="/map" class="sort">정렬</a></th>
+            <th scope="col">Service type <a href="/map" class="sort">정렬</a></th>
+            <th scope="col">TradeAccess <a href="/map" class="sort">정렬</a></th>
         </tr>
         </thead>
         <tbody>
-        <tr>
-            <td>trade.merchantname</td>
-            <td>trade.amount</td>
-            <td>trade.serviceType</td>
-            <td>trade.serviceType</td>
+        <tr th:each="merchant: ${merchantList}">
+            <td th:text="${merchant.merchantName}"></td>
+            <td th:text="${merchant.address}"></td>
+            <td th:text="${merchant.serviceType}"></td>
+            <td th:text="${merchant.statusType}"></td>
         </tr>
         </tbody>
     </table>
+    </div>
 </div>
 
 <script th:inline="javascript">
@@ -62,6 +64,7 @@
 <!--    zoom&#45;&#45;;-->
 <!--    let centerLat = minLat + latDiff/2-->
 <!--    let centerLng = minLng + lngDiff/2-->
+
 
 
     const map = new naver.maps.Map('map', {

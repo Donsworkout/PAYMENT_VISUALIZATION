@@ -18,6 +18,11 @@ body {
     cursor: pointer
 }
 
+#infoTable {
+    width: 70%
+    margin: 0 auto;
+}
+
 #closeBtn {
   position: absolute;
   cursor: pointer;
