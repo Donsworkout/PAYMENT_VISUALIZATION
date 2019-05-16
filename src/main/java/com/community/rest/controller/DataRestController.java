@@ -1,7 +1,6 @@
 package com.community.rest.controller;
 
 import com.community.rest.domain.Trade;
-import com.community.rest.repository.DailyStaticRepository;
 import com.community.rest.repository.MerchantRepository;
 import com.community.rest.repository.TradeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,9 +24,6 @@ public class DataRestController {
 
     @Autowired
     TradeRepository tradeRepositorty;
-
-    @Autowired
-    DailyStaticRepository dailyStaticRepository;
 
    @GetMapping({"","/"})
     public String board(Model model) {

@@ -3,6 +3,7 @@ package com.community.rest.controller;
 import java.io.File;
 import java.io.IOException;
 
+import com.community.rest.repository.TradeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,7 +19,10 @@ import com.community.rest.service.DataUploadService;
 public class DataUploadController {
 	@Autowired
 	DataUploadService dataUploadService = new DataUploadService();
-	
+
+    @Autowired
+    TradeRepository tradeRepositorty;
+
 	@GetMapping("")
 	public String uploadForm() {
 		return "/upload/form";
