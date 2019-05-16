@@ -78,18 +78,18 @@
     })
 
     const markers = [],
-        data = accidentDeath.searchResult.accidentDeath
+        data = /*[[${merchantList}]]*/
 
-      for (var i = 0, ii = data.length; i < ii; i++) {
-        var spot = data[i],
-          latlng = new naver.maps.LatLng(spot.grd_la, spot.grd_lo),
-          marker = new naver.maps.Marker({
+      for(let i=0; i<data.length; i++) {
+        let latlng = new naver.maps.LatLng(data[i].yPos, data[i].xPos);
+        console.log(data[i].xPos, data[i].yPos);
+        let marker = new naver.maps.Marker({
             position: latlng,
             draggable: true
-          })
-
-        markers.push(marker)
+        })
+        markers.push(marker);
       }
+
 
     const htmlMarker1 = {
           content:
