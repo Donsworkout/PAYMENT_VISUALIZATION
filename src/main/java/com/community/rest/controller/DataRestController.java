@@ -3,6 +3,8 @@ package com.community.rest.controller;
 import com.community.rest.domain.Trade;
 import com.community.rest.repository.MerchantRepository;
 import com.community.rest.repository.TradeRepository;
+import com.mysql.cj.Query;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -10,7 +12,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.persistence.criteria.CriteriaQuery;
 import javax.servlet.http.HttpServletRequest;
+
+import java.util.Date;
 import java.util.List;
 
 @Controller
@@ -42,9 +47,11 @@ public class DataRestController {
     
     @GetMapping("/byDay")
     public String dayBd(Model model) {
-    	 //model.addAttribute("merchantList", merchantRepository.findAll());
-    	 //model.addAttribute("tList",tradeRepositorty.findAll());
+    	 model.addAttribute("SD",tradeRepositorty.getMinDate());
+    	 model.addAttribute("ED",tradeRepositorty.getMaxDate());
          return "/dayView";
     }
+
+
     
 }
