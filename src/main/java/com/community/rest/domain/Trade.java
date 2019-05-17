@@ -72,11 +72,12 @@ public class Trade implements Serializable {
 		this.tradeAccess = tradeAccess;
 	}
 
+
 	public Trade() {
-		
+		// TODO Auto-generated constructor stub
 	}
-	
-	
+
+
 	public Long getId() {
 		return id;
 	}

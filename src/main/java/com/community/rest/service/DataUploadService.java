@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import com.community.rest.domain.Merchant;
 import com.community.rest.domain.Trade;
+import com.community.rest.repository.DailyStaticRepository;
 import com.community.rest.repository.MerchantRepository;
 import com.community.rest.repository.TradeRepository;
 import com.community.rest.utilities.ExcelRead;
@@ -32,6 +33,12 @@ public class DataUploadService {
 	
 	private static final org.slf4j.Logger logger = LoggerFactory.getLogger(DataUploadService.class);
 
+	@Autowired
+	private CoordsParsingService coordsParsingService;
+
+	@Autowired
+	private DailyStaticRepository dailyStaticRepository;
+	
 	public void excelUpload(File destFile, String type) throws Exception {
 		
 		ExcelReadOption excelReadOption = new ExcelReadOption();
@@ -48,9 +55,12 @@ public class DataUploadService {
 			loadMerchant(excelReadOption);
 		}else {
 			System.out.println("업로드가 지원되지 않는 타입입니다");
+			return;
 		}
+
 	}
-	
+
+
 	public void loadTrade(ExcelReadOption excelReadOption) throws NumberFormatException, EncryptedDocumentException, InvalidFormatException, IOException {
 		List<Map<String, String>> excelContent = ExcelRead.read(excelReadOption, 0);
 		
@@ -67,9 +77,9 @@ public class DataUploadService {
 			Trade trade = new Trade();
 			Long id = Long.parseLong(article.get("A"));
 			
-			//if(null != tradeRepository.findById(id).orElse(null)) {
-			//	continue;
-			//}
+			if(null != tradeRepository.findById(id).orElse(null)) {
+				continue;
+			}
 			
 			trade.setId(Long.parseLong(article.get("A")));
 			Date tradedate;

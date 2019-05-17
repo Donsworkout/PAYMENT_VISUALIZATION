@@ -9,6 +9,13 @@
             content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"
     />
     <title>Offline Payment</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}" />
+    <link rel="stylesheet" th:href="@{/css/index.css}" />
+    <script
+            type="text/javascript"
+            src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=qrxonlktn8&submodules=geocoder"
+    ></script>
+    <script th:src="@{/js/c3.min.js}"></script>
     <script th:src="@{/js/jquery.min.js}"></script>
     <script src="http://malsup.github.com/jquery.form.js"></script> 
 </head>
@@ -46,15 +53,20 @@
 					<button type="button" id="addExcelImpoartBtn" class="btn" onclick="check()">
 						<span>업로드</span>
 					</button>
+
 				</div>				
 			</div>
 		</form>
 		<button type="button" id="coordsSet" class="btn" onclick="setCoords()">
 			<span>좌표 업데이트</span>
 		</button>
+		<button type="button" id="addDatabase" class="btn">
+			<span>DB 생성하기</span>
+		</button>
 	</div>
 
 	<script>
+		const button = document.querySelector('#addDatabase')
 		function checkFileType(filePath) {
 			var fileFormat = filePath.split(".");
 			if (fileFormat.indexOf("xlsx") > -1) {
@@ -64,6 +76,17 @@
 			}
 
 		}
+
+		button.addEventListener('click', () => {
+		console.log('클릭')
+			    $.ajax({
+				  type: "GET",
+				  url: "http://localhost:8080/data",
+				  success: function(response) {
+			 		alert("DB 생성 완료");
+					}
+				});
+		})
 
 		function check() {
 			var file = $("#excelFile").val();
