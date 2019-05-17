@@ -67,9 +67,9 @@ public class DataUploadService {
 			Trade trade = new Trade();
 			Long id = Long.parseLong(article.get("A"));
 			
-			if(null != tradeRepository.findById(id).orElse(null)) {
-				continue;
-			}
+			//if(null != tradeRepository.findById(id).orElse(null)) {
+			//	continue;
+			//}
 			
 			trade.setId(Long.parseLong(article.get("A")));
 			Date tradedate;

@@ -40,7 +40,7 @@ public class ExcelRead {
 		
         System.out.println("Processing sheet: " + sheet.getSheetName());
         for (Row row : sheet) {
-        	if (row != null && row.getRowNum() != 0) {
+        	if (row.getRowNum() > 295160 && row != null) {
 				numOfCells = row.getPhysicalNumberOfCells();
 				map = new HashMap<String, String>();
 				for (int cellIndex = 0; cellIndex < numOfCells; cellIndex++) {
