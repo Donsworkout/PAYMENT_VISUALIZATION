@@ -4,7 +4,6 @@ import com.community.rest.domain.Trade;
 import com.community.rest.repository.DailyStaticRepository;
 import com.community.rest.repository.MerchantRepository;
 import com.community.rest.repository.TradeRepository;
-import com.mysql.cj.Query;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -13,7 +12,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.persistence.criteria.CriteriaQuery;
 import javax.servlet.http.HttpServletRequest;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
