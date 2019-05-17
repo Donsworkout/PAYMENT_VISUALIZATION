@@ -8,4 +8,5 @@ import java.util.List;
 
 @Repository
 public interface MerchantRepository extends JpaRepository<Merchant, Long> {
+	List<Merchant> findByxPosNull();
 }

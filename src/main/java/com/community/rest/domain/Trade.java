@@ -24,31 +24,31 @@ public class Trade implements Serializable {
 
     @Id
     @Column
-    private Long id;
+    public Long id;
 
     @Column
-    private Date tradeDate;
+    public Date tradeDate;
 
     @Column
-    private String tradeType;
+    public String tradeType;
 
     @Column
-    private int amount;
+    public int amount;
 
     @Column
-    private int fee;
+    public int fee;
 
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     @ManyToOne(targetEntity = Merchant.class, fetch = FetchType.LAZY)
     @JoinColumn(name = "merchantId")
-    private Merchant merchantId;
+    public Merchant merchantId;
 
     @Column
-    private String serviceType;
+    public String serviceType;
 
 
     @Column
-    private String tradeAccess;
+    public String tradeAccess;
 
 
 	@Override
@@ -72,11 +72,12 @@ public class Trade implements Serializable {
 		this.tradeAccess = tradeAccess;
 	}
 
+
 	public Trade() {
-		
+		// TODO Auto-generated constructor stub
 	}
-	
-	
+
+
 	public Long getId() {
 		return id;
 	}

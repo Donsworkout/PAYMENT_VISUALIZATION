@@ -8,8 +8,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import org.springframework.data.geo.Point;
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -20,31 +18,31 @@ import lombok.NoArgsConstructor;
 public class Merchant implements Serializable {
     @Id
     @Column
-    private Long id;
+    public Long id;
 
     @Column
-    private String merchantName;
+    public String merchantName;
 
     @Column
-    private Date regDate;
+    public Date regDate;
     
 	@Column
-    private String serviceType;
+    public String serviceType;
 
     @Column
-    private String statusType;
+    public String statusType;
 
     @Column
-    private String address;
+    public String address;
 
     @Column
-    private String addressDetail;
+    public String addressDetail;
 
     @Column
-    private Double xPos;
+    public Double xPos;
 
     @Column
-    private Double yPos;
+    public Double yPos;
 
 	public String getMerchantName() {
 		return merchantName;
@@ -117,12 +115,8 @@ public class Merchant implements Serializable {
     public Long getId() {
         return id;
     }
-    
-    
-    public Merchant() {
-    	
-    }
-    
+
+
 	public Merchant(Long id, String merchantName, Date regDate, String serviceType, String statusType, String address,
 			String addressDetail, double xPos, double yPos) {
 		super();
@@ -137,7 +131,11 @@ public class Merchant implements Serializable {
 		this.yPos = yPos;
 	}
 
-    public boolean isEmptyCoords() {
+    public Merchant() {
+		// TODO Auto-generated constructor stub
+	}
+
+	public boolean isEmptyCoords() {
     	try {
     		return (this.xPos.equals(null) || this.yPos.equals(null));
     	}catch(NullPointerException e){  

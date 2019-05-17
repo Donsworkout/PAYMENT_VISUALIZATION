@@ -1,5 +1,7 @@
 package com.community.rest;
 
+import java.util.logging.Level;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Configuration;
@@ -14,9 +16,9 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 public class DemoServerApplication {
 
     public static void main(String[] args) {
+    	java.util.logging.Logger.getLogger("org.hibernate").setLevel(Level.OFF);
         SpringApplication.run(DemoServerApplication.class, args);
     }
-
     @Configuration
     @EnableGlobalMethodSecurity(prePostEnabled = true)
     @EnableWebSecurity

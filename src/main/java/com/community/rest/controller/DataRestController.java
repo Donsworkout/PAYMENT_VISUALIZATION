@@ -1,6 +1,7 @@
 package com.community.rest.controller;
 
 import com.community.rest.domain.Trade;
+import com.community.rest.repository.DailyStaticRepository;
 import com.community.rest.repository.MerchantRepository;
 import com.community.rest.repository.TradeRepository;
 import com.mysql.cj.Query;
@@ -14,6 +15,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.persistence.criteria.CriteriaQuery;
 import javax.servlet.http.HttpServletRequest;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 
 import java.util.Date;
 import java.util.List;
@@ -28,9 +31,14 @@ public class DataRestController {
     @Autowired
     TradeRepository tradeRepositorty;
 
+    @Autowired
+    DailyStaticRepository dailyStaticRepository;
+
    @GetMapping({"","/"})
-    public String board(Model model) {
+    public String board(Model model) throws ParseException {
         model.addAttribute("merchantList", merchantRepository.findAll());
+       Date tradedate = new SimpleDateFormat("yyyyMMdd").parse("20190509");
+        model.addAttribute("merchantTradeInfoList", dailyStaticRepository.findByTradeDate(tradedate));
         return "/index";
     }
 

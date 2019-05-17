@@ -1,17 +1,23 @@
 package com.community.rest.service;
 
 import java.io.File;
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.poi.EncryptedDocumentException;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.community.rest.domain.Merchant;
 import com.community.rest.domain.Trade;
+import com.community.rest.repository.DailyStaticRepository;
 import com.community.rest.repository.MerchantRepository;
 import com.community.rest.repository.TradeRepository;
 import com.community.rest.utilities.ExcelRead;
@@ -25,8 +31,13 @@ public class DataUploadService {
 	@Autowired
 	private MerchantRepository merchantRepository;
 	
+	private static final org.slf4j.Logger logger = LoggerFactory.getLogger(DataUploadService.class);
+
 	@Autowired
 	private CoordsParsingService coordsParsingService;
+
+	@Autowired
+	private DailyStaticRepository dailyStaticRepository;
 	
 	public void excelUpload(File destFile, String type) throws Exception {
 		
@@ -44,74 +55,107 @@ public class DataUploadService {
 			loadMerchant(excelReadOption);
 		}else {
 			System.out.println("업로드가 지원되지 않는 타입입니다");
+			return;
 		}
+
 	}
-	
-	public void loadTrade(ExcelReadOption excelReadOption) throws NumberFormatException {
-		if(tradeRepository.count() > 1) {
-			tradeRepository.deleteAll();			
-		}
+
+
+	public void loadTrade(ExcelReadOption excelReadOption) throws NumberFormatException, EncryptedDocumentException, InvalidFormatException, IOException {
 		List<Map<String, String>> excelContent = ExcelRead.read(excelReadOption, 0);
+		
+		int index = 0;
+		List<Trade> tmpTrades = new ArrayList<Trade>();
+		
 		for (Map<String, String> article : excelContent) {
+			if(index == 10000) {
+				tradeRepository.saveAll(tmpTrades);
+				tmpTrades.clear();
+				index = 0;
+			}
+			
 			Trade trade = new Trade();
-			
 			Long id = Long.parseLong(article.get("A"));
-			Trade tempTrade = tradeRepository.findById(id).orElse(null);
 			
-			if(null != tempTrade) {
+			if(null != tradeRepository.findById(id).orElse(null)) {
 				continue;
 			}
 			
 			trade.setId(Long.parseLong(article.get("A")));
 			Date tradedate;
 			try {
-				//System.out.println(article.get("B"));
 				tradedate = new SimpleDateFormat("yyyyMMdd").parse(article.get("B"));
 				trade.setTradeDate(tradedate);
 			} catch (ParseException e) {
 				e.printStackTrace();
+				logger.info("Trade_ID- :" + id + "tradeDate is not uploaded");
 			}
-			trade.setTradeType(article.get("C").split("\\.")[0]);
-			trade.setAmount(Integer.parseInt(article.get("D").split("\\.")[0]));
-			trade.setFee(Integer.parseInt(article.get("E").split("\\.")[0]));
-			trade.setMerchantId(merchantRepository.findById(Long.parseLong(article.get("F"))).orElse(null));
-			trade.setServiceType(article.get("G"));
-			trade.setTradeAccess(article.get("H"));
-			tradeRepository.save(trade);
+			
+			trade.tradeType = article.get("C").split("\\.")[0];
+			trade.amount = Integer.parseInt(article.get("D").split("\\.")[0]);
+			trade.fee = Integer.parseInt(article.get("E").split("\\.")[0]);
+			trade.merchantId = merchantRepository.findById(Long.parseLong(article.get("F"))).orElse(null);
+			trade.serviceType = article.get("G");
+			trade.tradeAccess = article.get("H");
+			
+			tmpTrades.add(trade);
+			index ++;
 		}	
+		if(!tmpTrades.isEmpty()) {
+			tradeRepository.saveAll(tmpTrades);
+			tmpTrades.clear();			
+		}
 	}
 
-	public void loadMerchant(ExcelReadOption excelReadOption) {
+	public void loadMerchant(ExcelReadOption excelReadOption) throws EncryptedDocumentException, InvalidFormatException, IOException {
 		List<Map<String, String>> excelContent = ExcelRead.read(excelReadOption, 1);
+		
+		int index = 0;
+		List<Merchant> tmpMerchants = new ArrayList<Merchant>();
+		
 		for (Map<String, String> article : excelContent) {
+			
+			if(index == 10000) {
+				merchantRepository.saveAll(tmpMerchants);
+				tmpMerchants.clear();
+				index = 0;
+			}
+			
 			Merchant merchant = new Merchant();
 			
 			Long id = Long.parseLong(article.get("A"));
-			Merchant tempMct = merchantRepository.findById(id).orElse(null);
 			
-			if(null != tempMct) {
+			if(null != merchantRepository.findById(id).orElse(null)) {
 				continue;
 			}
 			
-			merchant.setId(Long.parseLong(article.get("A")));
-			merchant.setMerchantName(article.get("B"));
+			merchant.id = Long.parseLong(article.get("A"));
+			merchant.merchantName = article.get("B");
+			
 			Date regdate;
 			try {
 				regdate = new SimpleDateFormat("yyyyMMdd").parse(article.get("C"));
 				merchant.setRegDate(regdate);
 			} catch (ParseException e) {
 				e.printStackTrace();
+				logger.info("Merchant_ID- :" + id + "tradeDate is not uploaded");
 			}
 			
-			merchant.setServiceType(article.get("D"));
-			merchant.setStatusType(article.get("E"));
-			merchant.setAddress(article.get("F"));
-			merchant.setAddressDetail(article.get("G"));
+			merchant.serviceType = article.get("D");
+			merchant.statusType = article.get("E");
+			merchant.address = article.get("F");
+			merchant.addressDetail = article.get("G");
 			
-			merchant.setxPos(coordsParsingService.getCoordsByAddress(article.get("F")).getX());
-			merchant.setyPos(coordsParsingService.getCoordsByAddress(article.get("F")).getY());
-			
-			merchantRepository.save(merchant);
-		}		
+			//merchant.xPos = coordsParsingService.getCoordsByAddress(article.get("F")).getX();
+			//merchant.yPos = coordsParsingService.getCoordsByAddress(article.get("F")).getY();
+			System.out.println(merchant);
+			tmpMerchants.add(merchant);
+			index ++;
+		}	
+
+		if(!tmpMerchants.isEmpty()) {
+			merchantRepository.saveAll(tmpMerchants);
+			tmpMerchants.clear();			
+		}
 	}
 }

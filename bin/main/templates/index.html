@@ -16,29 +16,35 @@
             type="text/javascript"
             src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=qrxonlktn8&submodules=geocoder"
     ></script>
-    <script th:src="@{/js/accidentdeath.js}"></script>
     <script th:src="@{/js/MarkerClustering.js}"></script>
     <script th:src="@{/js/jquery.min.js}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.9.1/jquery.tablesorter.min.js"></script>
 </head>
 <body>
 <div id="wrapper">
     <div id="map"></div>
     <div id="infoTable">
-    <table class="table">
+    <table  id="sampleTable" class="table tablesorter">
         <thead class="thead-dark">
         <tr>
-            <th scope="col">Name <a href="/map" class="sort">정렬</a></th>
-            <th scope="col">Amount <a href="/map" class="sort">정렬</a></th>
-            <th scope="col">Service type <a href="/map" class="sort">정렬</a></th>
-            <th scope="col">TradeAccess <a href="/map" class="sort">정렬</a></th>
+            <th scope="col">Name</th>
+            <th scope="col">Frequency</th>
+            <th scope="col">Amount</th>
         </tr>
         </thead>
+        <tbody class="avoid-sort">
+            <tr>
+                <td><b>총 합</b></td>
+                <td><b>100</b></td>
+                <td><b>100</b></td>
+            </tr>
+        </tbody>
+
         <tbody>
-        <tr th:each="merchant: ${merchantList}">
-            <td th:text="${merchant.merchantName}"></td>
-            <td th:text="${merchant.address}"></td>
-            <td th:text="${merchant.serviceType}"></td>
-            <td th:text="${merchant.statusType}"></td>
+        <tr th:each="merchantTrade: ${merchantTradeInfoList}">
+            <td th:text="${merchantTrade.merchantId.merchantName}"></td>
+            <td th:text="${merchantTrade.frequency}"></td>
+            <td th:text="${merchantTrade.amount}"></td>
         </tr>
         </tbody>
     </table>
@@ -47,25 +53,14 @@
 
 <script th:inline="javascript">
 /* <![CDATA[ */
-    // 모든 마커가 표시되게 zoom level을 정하는 로직
+    console.log(/*[[${merchantTradeInfoList}]]*/)
+    const amountSort = document.querySelector('.amount');
+    const frequencySort = document.querySelector('.frequency');
 
-    // level 1에서 지도가 표시할 수 있는 위경도 차이
-<!--    let biggestLatDiff = 8.753656900000003-->
-<!--    let biggestLngDiff = 14.771484400000006-->
-<!--    let zoomlevel = 1-->
-
-    // latDiff: 주어진 마커들의 최대최소 위도차
-    // lngDiff: 주어진 마커들의 최대최소 경도차
-<!--    while(biggestLatDiff > latDiff || biggestLngDiff > lngDiff) {-->
-<!--        zoom++;-->
-<!--        lat /= 2;-->
-<!--        lng /= 2;-->
-<!--    }-->
-<!--    zoom&#45;&#45;;-->
-<!--    let centerLat = minLat + latDiff/2-->
-<!--    let centerLng = minLng + lngDiff/2-->
-
-
+    let bound = new naver.maps.LatLngBounds(
+                    new naver.maps.LatLng(37.3595669, 126.976034),
+                    new naver.maps.LatLng(37.5632597, 127.1054065)
+                );
 
     const map = new naver.maps.Map('map', {
         zoom: 3,
@@ -77,19 +72,28 @@
         }
     })
 
+    map.fitBounds(bound);
     const markers = [],
-        data = accidentDeath.searchResult.accidentDeath
+        data = /*[[${merchantList}]]*/
 
-      for (var i = 0, ii = data.length; i < ii; i++) {
-        var spot = data[i],
-          latlng = new naver.maps.LatLng(spot.grd_la, spot.grd_lo),
-          marker = new naver.maps.Marker({
+    console.log(data);
+    $(function() {
+      $("table").tablesorter({
+        theme : 'blue',
+        cssInfoBlock : "avoid-sort",
+        widgets: [ 'zebra' ]
+      });
+    });
+
+      for(let i=0; i<data.length; i++) {
+        let latlng = new naver.maps.LatLng(data[i].yPos, data[i].xPos);
+        let marker = new naver.maps.Marker({
             position: latlng,
             draggable: true
-          })
-
-        markers.push(marker)
+        })
+        markers.push(marker);
       }
+
 
     const htmlMarker1 = {
           content:

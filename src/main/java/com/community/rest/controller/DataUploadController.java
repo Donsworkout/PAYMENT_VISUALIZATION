@@ -2,7 +2,10 @@ package com.community.rest.controller;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
+import com.community.rest.repository.TradeRepository;
+import com.community.rest.service.DataBaseUploadService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,6 +14,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import com.community.rest.domain.Merchant;
+import com.community.rest.repository.MerchantRepository;
+import com.community.rest.service.CoordsParsingService;
 import com.community.rest.service.DataUploadService;
 
 @Controller
@@ -18,7 +24,19 @@ import com.community.rest.service.DataUploadService;
 public class DataUploadController {
 	@Autowired
 	DataUploadService dataUploadService = new DataUploadService();
+
+	@Autowired
+	CoordsParsingService coordsParsingService = new CoordsParsingService();
 	
+	@Autowired
+	MerchantRepository merchantRepository;
+	
+    @Autowired
+    DataBaseUploadService dataBaseUploadService = new DataBaseUploadService();
+
+    @Autowired
+    TradeRepository tradeRepositorty;
+
 	@GetMapping("")
 	public String uploadForm() {
 		return "/upload/form";
@@ -32,14 +50,27 @@ public class DataUploadController {
         if(excelFile==null || excelFile.isEmpty()){
             throw new RuntimeException("엑셀파일을 선택 해 주세요.");
         }
-        File destFile = new File("/Users/donsdev/spring_workspace/upload_folder/" + excelFile.getOriginalFilename()); 
+
+        File destFile = new File("/Users/doheeKang/Desktop" + excelFile.getOriginalFilename());
         //File destFile = new File("./src/main/resources/static/files/" + excelFile.getOriginalFilename());
+
         try{
             excelFile.transferTo(destFile);
         }catch(IllegalStateException | IOException e){
             throw new RuntimeException(e.getMessage(),e);
         }
         dataUploadService.excelUpload(destFile, sheet_type);
+
         return "redirect:/upload";
     }
+
+    
+    @PostMapping("/coords_setting")
+	public String coordsSetting() {
+    	List<Merchant> coordsNotSetted = merchantRepository.findByxPosNull();
+    	if(!coordsNotSetted.isEmpty()) {
+        	coordsParsingService.setMerchantsCoords(coordsNotSetted);    		
+    	}
+        return "redirect:/upload";
+	}
 }

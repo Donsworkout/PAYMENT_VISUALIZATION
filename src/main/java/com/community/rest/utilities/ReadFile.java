@@ -6,11 +6,13 @@ import java.io.IOException;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class ReadFile {
-	public static Workbook getWorkbook(String filePath) {
+	public static Workbook getWorkbook(String filePath) throws IOException {
 		FileInputStream fis = null;
+		XSSFWorkbook fis1 = null;
 		try {
 			fis = new FileInputStream(filePath);
 		} catch (FileNotFoundException e) {
@@ -25,11 +27,7 @@ public class ReadFile {
 				throw new RuntimeException(e.getMessage(), e);
 			}
 		} else if (filePath.toUpperCase().endsWith(".XLSX")) {
-			try {
-				wb = new XSSFWorkbook(fis);
-			} catch (IOException e) {
-				throw new RuntimeException(e.getMessage(), e);
-			}
+			wb = new SXSSFWorkbook(fis1);
 		}
 
 		return wb;
