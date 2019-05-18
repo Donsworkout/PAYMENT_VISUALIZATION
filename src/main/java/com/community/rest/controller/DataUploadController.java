@@ -4,8 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-import com.community.rest.repository.TradeRepository;
-import com.community.rest.service.DataBaseUploadService;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,12 +16,16 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.community.rest.domain.Merchant;
 import com.community.rest.repository.MerchantRepository;
+import com.community.rest.repository.TradeRepository;
 import com.community.rest.service.CoordsParsingService;
+import com.community.rest.service.DataBaseUploadService;
 import com.community.rest.service.DataUploadService;
 
 @Controller
 @RequestMapping("/upload")
 public class DataUploadController {
+	private static final Logger LOGGER = LogManager.getLogger(DataUploadController.class);
+	
 	@Autowired
 	DataUploadService dataUploadService = new DataUploadService();
 
@@ -43,15 +47,18 @@ public class DataUploadController {
 	}
 	
     @PostMapping("/ajax")
-    public String excelUpload(MultipartHttpServletRequest request, String sheet_type)  throws Exception{
-    	System.out.println("업로드 시작");
-    	System.out.println(sheet_type);
+    public String excelUpload(MultipartHttpServletRequest request, String sheetType) {
+    	
+    	LOGGER.info("Excel Upload Started");
+
         MultipartFile excelFile =request.getFile("excelFile");
-        if(excelFile==null || excelFile.isEmpty()){
+        
+        if(excelFile == null || excelFile.isEmpty()){
             throw new RuntimeException("엑셀파일을 선택 해 주세요.");
         }
 
-        File destFile = new File("/Users/doheeKang/Desktop" + excelFile.getOriginalFilename());
+        //File destFile = new File("/Users/doheeKang/Desktop" + excelFile.getOriginalFilename());
+        File destFile = new File("/Users/donsdev/spring_workspace/upload_folder/" + excelFile.getOriginalFilename());
         //File destFile = new File("./src/main/resources/static/files/" + excelFile.getOriginalFilename());
 
         try{
@@ -59,7 +66,13 @@ public class DataUploadController {
         }catch(IllegalStateException | IOException e){
             throw new RuntimeException(e.getMessage(),e);
         }
-        dataUploadService.excelUpload(destFile, sheet_type);
+        
+        try {
+			dataUploadService.excelUpload(destFile, sheetType);
+		} catch (Exception e) {
+			//e.printStackTrace();
+			LOGGER.warn("Check sheetType parameter is valid : {}", sheetType);
+		}
 
         return "redirect:/upload";
     }
@@ -67,10 +80,12 @@ public class DataUploadController {
     
     @PostMapping("/coords_setting")
 	public String coordsSetting() {
-    	List<Merchant> coordsNotSetted = merchantRepository.findByxPosNull();
+    	List<Merchant> coordsNotSetted = merchantRepository.findByXPosOrYPosIsNull();
+    	
     	if(!coordsNotSetted.isEmpty()) {
         	coordsParsingService.setMerchantsCoords(coordsNotSetted);    		
     	}
+    	
         return "redirect:/upload";
 	}
 }

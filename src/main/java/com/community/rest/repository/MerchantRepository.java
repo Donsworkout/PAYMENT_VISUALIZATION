@@ -1,12 +1,18 @@
 package com.community.rest.repository;
 
-import com.community.rest.domain.Merchant;
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
+import com.community.rest.domain.Merchant;
 
 @Repository
 public interface MerchantRepository extends JpaRepository<Merchant, Long> {
-	List<Merchant> findByxPosNull();
+	@Query(value="SELECT * "
+				+ "FROM merchant "
+				+ "WHERE x_pos IS NULL OR "
+				+ "y_pos IS NULL", nativeQuery=true)
+	List<Merchant> findByXPosOrYPosIsNull();
 }

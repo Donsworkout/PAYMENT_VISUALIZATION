@@ -4,15 +4,20 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class ReadFile {
+	private static final Logger LOGGER = LogManager.getLogger(ReadFile.class);
 	public static Workbook getWorkbook(String filePath) throws IOException {
+
 		FileInputStream fis = null;
-		XSSFWorkbook fis1 = null;
+		XSSFWorkbook fisXlsx = null; // xlsx 전용 Workbook Reader
+
 		try {
 			fis = new FileInputStream(filePath);
 		} catch (FileNotFoundException e) {
@@ -27,7 +32,7 @@ public class ReadFile {
 				throw new RuntimeException(e.getMessage(), e);
 			}
 		} else if (filePath.toUpperCase().endsWith(".XLSX")) {
-			wb = new SXSSFWorkbook(fis1);
+			wb = new SXSSFWorkbook(fisXlsx);
 		}
 
 		return wb;

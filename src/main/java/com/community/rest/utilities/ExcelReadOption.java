@@ -22,13 +22,13 @@ public class ExcelReadOption {
 	}
 
 	public List<String> getOutputColumns() {
-		List<String> temp = new ArrayList<String>();
+		List<String> temp = new ArrayList<>();
 		temp.addAll(outputColumns);
 		return temp;
 	}
 
 	public void setOutputColumns(List<String> outputColumns) {
-		List<String> temp = new ArrayList<String>();
+		List<String> temp = new ArrayList<>();
 		temp.addAll(outputColumns);
 		this.outputColumns = temp;
 	}
@@ -36,7 +36,7 @@ public class ExcelReadOption {
 	// 가변인자, 스트링 객체가 0개부터 여러개 올 수 있다.
 	public void setOutputColumns(String... outputColumns) {
 		if (this.outputColumns == null) {
-			this.outputColumns = new ArrayList<String>();
+			this.outputColumns = new ArrayList<>();
 		}
 		for (String outputColumn : outputColumns) {
 			this.outputColumns.add(outputColumn);

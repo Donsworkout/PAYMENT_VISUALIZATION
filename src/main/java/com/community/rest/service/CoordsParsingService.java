@@ -1,9 +1,9 @@
 package com.community.rest.service;
 
 import java.awt.geom.Point2D;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
@@ -21,7 +21,7 @@ public class CoordsParsingService {
 	@Autowired
 	MerchantRepository merchantRepository;
 	
-	public void setMerchantsCoords (List<Merchant> coordsNotSetted) {
+	public void setMerchantsCoords (Collection<Merchant> coordsNotSetted) {
 		for (Merchant merchant : coordsNotSetted) {
 			Point2D coord = getCoordsByAddress(merchant.address);
 			merchant.xPos = coord.getX();
