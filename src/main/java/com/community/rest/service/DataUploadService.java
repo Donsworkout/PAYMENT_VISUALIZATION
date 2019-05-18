@@ -33,6 +33,9 @@ public class DataUploadService {
 	@Autowired
 	private MerchantRepository merchantRepository;
 	
+	@Autowired
+	private CoordsParsingService coordsparsingservice;
+	
 	private static final Logger LOGGER = LogManager.getLogger(DataUploadService.class);
 
 	
@@ -114,6 +117,7 @@ public class DataUploadService {
 			
 			if(index == 10000) {
 				merchantRepository.saveAll(tmpMerchants);
+				coordsparsingservice.setMerchantsCoords(tmpMerchants);
 				tmpMerchants.clear();
 				index = 0;
 			}
@@ -148,7 +152,9 @@ public class DataUploadService {
 
 		if(!tmpMerchants.isEmpty()) {
 			merchantRepository.saveAll(tmpMerchants);
+			coordsparsingservice.setMerchantsCoords(tmpMerchants);
 			tmpMerchants.clear();			
 		}
+		
 	}
 }

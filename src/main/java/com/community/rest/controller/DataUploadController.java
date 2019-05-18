@@ -57,20 +57,17 @@ public class DataUploadController {
             throw new RuntimeException("엑셀파일을 선택 해 주세요.");
         }
 
-        //File destFile = new File("/Users/donsdev/spring_workspace/upload_folder/" + excelFile.getOriginalFilename());
         File destFile = new File("/home/hackday_app/" + excelFile.getOriginalFilename());
-        //File destFile = new File("./src/main/resources/static/files/" + excelFile.getOriginalFilename());
 
         try{
             excelFile.transferTo(destFile);
-        }catch(IllegalStateException | IOException e){
+        } catch(IllegalStateException | IOException e) {
             throw new RuntimeException(e.getMessage(),e);
         }
         
         try {
 			dataUploadService.excelUpload(destFile, sheetType);
 		} catch (Exception e) {
-			//e.printStackTrace();
 			LOGGER.warn("Check sheetType parameter is valid : {}", sheetType);
 		}
 
