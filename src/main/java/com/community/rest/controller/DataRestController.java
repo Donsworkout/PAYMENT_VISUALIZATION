@@ -27,7 +27,7 @@ public class DataRestController {
     MerchantRepository merchantRepository;
 
     @Autowired
-    TradeRepository tradeRepositorty;
+    TradeRepository tradeRepository;
 
     @Autowired
     DailyStaticRepository dailyStaticRepository;
@@ -43,18 +43,18 @@ public class DataRestController {
     @GetMapping("/trade")
     public @ResponseBody List<Trade> trade(HttpServletRequest request) {
         String merchantId = request.getParameter("id");
-        return tradeRepositorty.findByMerchantIdId(Long.parseLong(merchantId));
+        return tradeRepository.findByMerchantIdId(Long.parseLong(merchantId));
     }
 
     @GetMapping("/allTrade")
     public @ResponseBody List<Trade> trades(){
-        return tradeRepositorty.findAll();
+        return tradeRepository.findAll();
     }
     
     @GetMapping("/byDay")
     public String dayBd(Model model) {
-    	 model.addAttribute("SD",tradeRepositorty.getMinDate());
-    	 model.addAttribute("ED",tradeRepositorty.getMaxDate());
+    	 model.addAttribute("SD",tradeRepository.findFirstByOrderByTradeDateDesc().tradeDate);
+    	 model.addAttribute("ED",tradeRepository.findFirstByOrderByTradeDateAsc().tradeDate);
          return "/dayView";
     }
 

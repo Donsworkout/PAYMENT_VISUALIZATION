@@ -1,37 +1,35 @@
 package com.community.rest.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-
-import javax.persistence.*;
-import java.awt.*;
-import java.io.Serializable;
+import java.awt.Point;
 import java.util.Date;
 
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
+import org.springframework.data.mongodb.core.mapping.Document;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+
 @Getter
+@Setter
+@ToString
 @NoArgsConstructor
-@Entity
-@Table
-public class Boundary implements Serializable {
+@AllArgsConstructor
+@Document(collection="boundaries")
+public class Boundary{
+	
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column
     private Long id;
 
-    @Column
     private Date tradeDate;
 
-    @Column
     private Point max;
 
-    @Column
     private Point min;
-
-    public Boundary(Long id, Date tradeDate, Point max, Point min) {
-        this.id = id;
-        this.tradeDate = tradeDate;
-        this.max = max;
-        this.min = min;
-    }
 }

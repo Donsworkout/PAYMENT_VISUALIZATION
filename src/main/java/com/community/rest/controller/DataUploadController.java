@@ -7,6 +7,9 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -41,6 +44,9 @@ public class DataUploadController {
     @Autowired
     TradeRepository tradeRepositorty;
 
+    @Autowired
+    MongoTemplate mongoTemplate;
+    
 	@GetMapping("")
 	public String uploadForm() {
 		return "/upload/form";
@@ -77,8 +83,9 @@ public class DataUploadController {
     
     @PostMapping("/coords_setting")
 	public String coordsSetting() {
-    	List<Merchant> coordsNotSetted = merchantRepository.findByXPosOrYPosIsNull();
-    	
+    	Query query = new Query();
+    	query.addCriteria(Criteria.where("xPos").is(null).orOperator(Criteria.where("yPos").is(null)));
+    	List<Merchant> coordsNotSetted = mongoTemplate.find(query,Merchant.class);   	
     	if(!coordsNotSetted.isEmpty()) {
         	coordsParsingService.setMerchantsCoords(coordsNotSetted);    		
     	}
