@@ -1,7 +1,6 @@
 package com.community.rest.service;
 
 import java.awt.geom.Point2D;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -15,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import com.community.rest.config.MapConfig;
 import com.community.rest.domain.Merchant;
 import com.community.rest.repository.MerchantRepository;
 
@@ -22,6 +22,9 @@ import com.community.rest.repository.MerchantRepository;
 public class CoordsParsingService {
 	@Autowired
 	MerchantRepository merchantRepository;
+	
+	@Autowired
+	MapConfig mapconfig;
 	
 	private static final Logger LOGGER = LogManager.getLogger(CoordsParsingService.class);
 	
@@ -41,11 +44,11 @@ public class CoordsParsingService {
 	
 	public Point2D getCoordsByAddress(String address) {
 		Point2D.Double coords = new Point2D.Double();
-		String url = "https://naveropenapi.apigw.ntruss.com/map-geocode/v2/geocode?query=" + address;
+		String url = mapconfig.getGeocoderUrl() + address;
 	    RestTemplate restTemplate = new RestTemplate();
 	    HttpHeaders httpHeaders = new HttpHeaders();
-	    httpHeaders.add("X-NCP-APIGW-API-KEY-ID", "f0mv9gc9op");
-	    httpHeaders.add("X-NCP-APIGW-API-KEY", "3sDoTfxMpWljOVEzY53O4qa85hriJgENBC98aSiE");
+	    httpHeaders.add("X-NCP-APIGW-API-KEY-ID", mapconfig.getClient());
+	    httpHeaders.add("X-NCP-APIGW-API-KEY", mapconfig.getSecret());
 	    HttpEntity<String> httpEntity = new HttpEntity<String>(httpHeaders);
 
 	    ResponseEntity<Map> response = restTemplate.exchange(url, HttpMethod.GET, httpEntity, Map.class);

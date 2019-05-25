@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import com.community.rest.config.ExcelConfig;
 import com.community.rest.domain.Merchant;
 import com.community.rest.repository.MerchantRepository;
 import com.community.rest.repository.TradeRepository;
@@ -46,6 +47,9 @@ public class DataUploadController {
 
     @Autowired
     MongoTemplate mongoTemplate;
+  
+    @Autowired
+    ExcelConfig excelconfig;
     
 	@GetMapping("")
 	public String uploadForm() {
@@ -63,7 +67,7 @@ public class DataUploadController {
             throw new RuntimeException("엑셀파일을 선택 해 주세요.");
         }
 
-        File destFile = new File("/home/hackday_app/" + excelFile.getOriginalFilename());
+        File destFile = new File(excelconfig.getSavePath() + excelFile.getOriginalFilename());
 
         try{
             excelFile.transferTo(destFile);
