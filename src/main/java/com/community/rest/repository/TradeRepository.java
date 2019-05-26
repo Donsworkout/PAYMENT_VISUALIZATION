@@ -13,4 +13,6 @@ public interface TradeRepository extends MongoRepository<Trade,Long> {
     public Trade findFirstByOrderByTradeDateDesc();
     
     public Trade findFirstByOrderByTradeDateAsc();
+    
+    public Long countById();
 }

@@ -35,7 +35,7 @@ public class DataRestController {
    @GetMapping({"","/"})
     public String board(Model model) throws ParseException {
         model.addAttribute("merchantList", merchantRepository.findAll());
-       Date tradedate = new SimpleDateFormat("yyyyMMdd").parse("20190509");
+        Date tradedate = new SimpleDateFormat("yyyyMMdd").parse("20190509");
         model.addAttribute("merchantTradeInfoList", dailyStaticRepository.findByTradeDate(tradedate));
         return "/index";
     }

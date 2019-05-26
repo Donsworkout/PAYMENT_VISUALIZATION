@@ -62,6 +62,7 @@ public class DataUploadService {
 		for (Map<String, String> article : excelContent) {
 			if(index == 10000) {
 				tradeRepository.saveAll(tmpTrades);
+				LOGGER.info("현재 trade 저장 개수 : " + tradeRepository.countById());
 				tmpTrades.clear();
 				index = 0;
 			}
@@ -97,6 +98,7 @@ public class DataUploadService {
 		// 10000개 단위로 마지막 나머지 엔티티들 commit 하고 임시 배열 해제
 		if(!tmpTrades.isEmpty()) {
 			tradeRepository.saveAll(tmpTrades);
+			LOGGER.info("현재 trade 저장 개수 : " + tradeRepository.countById());
 			tmpTrades.clear();			
 		}
 		
@@ -147,6 +149,7 @@ public class DataUploadService {
 
 		if(!tmpMerchants.isEmpty()) {
 			merchantRepository.saveAll(tmpMerchants);
+			LOGGER.info("현재 trade 저장 개수 : " + tradeRepository.countById());
 			coordsparsingservice.setMerchantsCoords(tmpMerchants);
 			tmpMerchants.clear();			
 		}
