@@ -28,7 +28,7 @@ public class ExcelRead {
         
 		try {
 			is = new FileInputStream(excelReadOption.getFilePath());
-			wb = StreamingReader.builder().open(is);
+			wb = StreamingReader.builder().rowCacheSize(100).bufferSize(4096).open(is);   
 		} catch (FileNotFoundException e) {
 			LOGGER.error("file not found in getFilePath()");
 		}
