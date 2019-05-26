@@ -30,6 +30,6 @@ HELP.md
 .vscode/
 
 ### properties
-application.propereties
+application.properties
 application-production.properties 
 config.properties
