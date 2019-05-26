@@ -46,6 +46,7 @@ dependencies {
 	compile("com.monitorjbl:xlsx-streamer:2.1.0")
   	compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.11.2'
   	compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.11.2'
+  	compile group: 'com.jayway.jsonpath', name: 'json-path', version: '2.2.1'
 	runtime('org.springframework.boot:spring-boot-devtools')
 	runtime('mysql:mysql-connector-java')
 	runtime('com.h2database:h2')
