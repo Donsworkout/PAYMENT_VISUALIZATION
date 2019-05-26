@@ -26,7 +26,7 @@ import com.community.rest.service.DataBaseUploadService;
 import com.community.rest.service.DataUploadService;
 
 @Controller
-@RequestMapping("/upload")
+@RequestMapping("upload")
 public class DataUploadController {
 	private static final Logger LOGGER = LogManager.getLogger(DataUploadController.class);
 	
