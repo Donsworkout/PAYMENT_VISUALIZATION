@@ -27,7 +27,7 @@ public class DataBaseUploadService {
             } else {
                 DailyStatic ds = new DailyStatic();
                 ds.setTradeDate(trade.getTradeDate());
-                ds.setMerchantId(trade.getMerchantId());
+                ds.setMerchantId(trade.merchantId);
                 ds.setAmount(trade.getAmount());
                 ds.setFrequency((long)1);
                 dailyStaticRepository.save(ds);

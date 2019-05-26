@@ -43,7 +43,7 @@ public class DataRestController {
     @GetMapping("/trade")
     public @ResponseBody List<Trade> trade(HttpServletRequest request) {
         String merchantId = request.getParameter("id");
-        return tradeRepository.findByMerchantIdId(Long.parseLong(merchantId));
+        return tradeRepository.findByMerchantId(Long.parseLong(merchantId));
     }
 
     @GetMapping("/allTrade")

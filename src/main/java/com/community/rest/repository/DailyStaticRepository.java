@@ -12,7 +12,7 @@ import com.community.rest.domain.Merchant;
 
 @Repository
 public interface DailyStaticRepository extends MongoRepository<DailyStatic, Long> {
-    Optional<DailyStatic> findByMerchantIdAndTradeDate(Merchant merchant, Date tradeDate);
+    Optional<DailyStatic> findByMerchantIdAndTradeDate(Long merchantId, Date tradeDate);
 
     List<DailyStatic> findByTradeDate(Date tradedate);
 }

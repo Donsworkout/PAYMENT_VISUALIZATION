@@ -27,7 +27,7 @@ public class DailyStatic{
 
     private Date tradeDate;
 
-    private Merchant merchantId;
+    private Long merchantId;
 
     private Integer amount;
 

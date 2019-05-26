@@ -73,7 +73,7 @@ public class DataUploadService {
 				continue;
 			}
 			
-			trade.setId(Long.parseLong(article.get("A")));
+			trade.id = Long.parseLong(article.get("A"));
 			
 			Date tradedate;
 			try {
@@ -86,7 +86,7 @@ public class DataUploadService {
 			trade.tradeType = article.get("C").split("\\.")[0];
 			trade.amount = Integer.parseInt(article.get("D").split("\\.")[0]);
 			trade.fee = Integer.parseInt(article.get("E").split("\\.")[0]);
-			trade.merchantId = merchantRepository.findById(Long.parseLong(article.get("F"))).orElse(null);
+			trade.merchantId = Long.parseLong(article.get("F"));
 			trade.serviceType = article.get("G");
 			trade.tradeAccess = article.get("H");
 			

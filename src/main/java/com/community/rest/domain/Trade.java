@@ -33,7 +33,7 @@ public class Trade{
 
     public int fee;
 
-    public Merchant merchantId;
+    public Long merchantId;
 
     public String serviceType;
 
