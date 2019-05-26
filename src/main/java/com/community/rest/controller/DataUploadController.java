@@ -53,7 +53,7 @@ public class DataUploadController {
     
 	@GetMapping("")
 	public String uploadForm() {
-		return "/upload/form";
+		return "upload/form";
 	}
 	
     @PostMapping("/ajax")
