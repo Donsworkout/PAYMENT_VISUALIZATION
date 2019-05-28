@@ -14,15 +14,25 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
 
+import com.community.rest.repository.TradeRepository;
 import com.monitorjbl.xlsx.StreamingReader;
 
 public class ExcelRead {
+	@Autowired
+	static
+	TradeRepository tradeRepository;
+	
+	@Autowired
+	static
+	MongoTemplate mongoTemplate;
+	
 	private static final Logger LOGGER = LogManager.getLogger(ExcelRead.class);
 	 
-	public static List<Map<String, String>> read(ExcelReadOption excelReadOption, int sheetNum) {
-		// 엑셀 파일서 첫번째 시트 
-		
+	public static List<Map<String, String>> read(ExcelReadOption excelReadOption, int sheetNum, long startCount) {
+		// 엑셀 파일서 첫번째 시트 		
 		Workbook wb = null;
         InputStream is = null;
         
@@ -47,7 +57,7 @@ public class ExcelRead {
 		LOGGER.info("Processing sheet: " + sheet.getSheetName());
 
         for (Row row : sheet) {
-        	if (row.getRowNum() > 0) {
+        	if (row.getRowNum() > startCount) {
 				numOfCells = row.getPhysicalNumberOfCells();
 				map = new HashMap<>();
 				for (int cellIndex = 0; cellIndex < numOfCells; cellIndex++) {
@@ -65,7 +75,8 @@ public class ExcelRead {
             }
         }
 
-		return result;
+        LOGGER.info("size is : " + result.size());
+		return result; 
 
 	}
 }

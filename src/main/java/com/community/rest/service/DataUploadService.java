@@ -11,6 +11,9 @@ import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
 import com.community.rest.domain.Merchant;
@@ -30,6 +33,9 @@ public class DataUploadService {
 	
 	@Autowired
 	private CoordsParsingService coordsparsingservice;
+	
+	@Autowired
+	private MongoTemplate mongoTemplate;
 	
 	private static final Logger LOGGER = LogManager.getLogger(DataUploadService.class);
 
@@ -54,7 +60,13 @@ public class DataUploadService {
 
 
 	public void loadTrade(ExcelReadOption excelReadOption) {
-		List<Map<String, String>> excelContent = ExcelRead.read(excelReadOption, 0);
+	    Query query = new Query();
+	    query.addCriteria(Criteria.where("_id").ne(null));
+	    long count = mongoTemplate.count(query, Trade.class);
+	    
+		LOGGER.info("현재 trade 저장 개수 (start) : " + count);
+
+		List<Map<String, String>> excelContent = ExcelRead.read(excelReadOption, 0, count);
 		
 		int index = 0;
 		List<Trade> tmpTrades = new ArrayList<>();
@@ -62,7 +74,7 @@ public class DataUploadService {
 		for (Map<String, String> article : excelContent) {
 			if(index == 10000) {
 				tradeRepository.saveAll(tmpTrades);
-				LOGGER.info("현재 trade 저장 개수 : " + tradeRepository.countById());
+				LOGGER.info("현재 trade 저장 개수 : " + mongoTemplate.count(query, Trade.class));
 				tmpTrades.clear();
 				index = 0;
 			}
@@ -101,11 +113,15 @@ public class DataUploadService {
 			LOGGER.info("현재 trade 저장 개수 : " + tradeRepository.countById());
 			tmpTrades.clear();			
 		}
-		
+
 	}
 
 	public void loadMerchant(ExcelReadOption excelReadOption) {
-		List<Map<String, String>> excelContent = ExcelRead.read(excelReadOption, 1);
+	    Query query = new Query();
+	    query.addCriteria(Criteria.where("_id").ne(null));
+	    long count = mongoTemplate.count(query, Trade.class);
+	    
+		List<Map<String, String>> excelContent = ExcelRead.read(excelReadOption, 1, count);
 		
 		int index = 0;
 		List<Merchant> tmpMerchants = new ArrayList<>();
@@ -149,7 +165,7 @@ public class DataUploadService {
 
 		if(!tmpMerchants.isEmpty()) {
 			merchantRepository.saveAll(tmpMerchants);
-			LOGGER.info("현재 trade 저장 개수 : " + tradeRepository.countById());
+			LOGGER.info("현재 trade 저장 개수 : " + count);
 			coordsparsingservice.setMerchantsCoords(tmpMerchants);
 			tmpMerchants.clear();			
 		}
