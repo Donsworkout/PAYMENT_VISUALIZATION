@@ -4,8 +4,12 @@ import com.community.rest.domain.Trade;
 import com.community.rest.repository.DailyStaticRepository;
 import com.community.rest.repository.MerchantRepository;
 import com.community.rest.repository.TradeRepository;
+import com.community.rest.service.CoordsParsingService;
+
+import lombok.AllArgsConstructor;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,18 +23,16 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+@AllArgsConstructor
 @Controller
 @RequestMapping("/map") //API URL
 public class DataRestController {
 
-    @Autowired
-    MerchantRepository merchantRepository;
+    private final MerchantRepository merchantRepository;
 
-    @Autowired
-    TradeRepository tradeRepository;
+    private final TradeRepository tradeRepository;
 
-    @Autowired
-    DailyStaticRepository dailyStaticRepository;
+    private final DailyStaticRepository dailyStaticRepository;
 
    @GetMapping({"","/"})
     public String board(Model model) throws ParseException {

@@ -23,19 +23,18 @@ import com.community.rest.repository.TradeRepository;
 import com.community.rest.utilities.ExcelRead;
 import com.community.rest.utilities.ExcelReadOption;
 
+import lombok.AllArgsConstructor;
+
+@AllArgsConstructor
 @Service
 public class DataUploadService {
-	@Autowired
-	private TradeRepository tradeRepository;
+	private final TradeRepository tradeRepository;
 	
-	@Autowired
-	private MerchantRepository merchantRepository;
+	private final MerchantRepository merchantRepository;
 	
-	@Autowired
-	private CoordsParsingService coordsparsingservice;
+	private final CoordsParsingService coordsparsingservice;
 	
-	@Autowired
-	private MongoTemplate mongoTemplate;
+	private final MongoTemplate mongoTemplate;
 	
 	private static final Logger LOGGER = LogManager.getLogger(DataUploadService.class);
 

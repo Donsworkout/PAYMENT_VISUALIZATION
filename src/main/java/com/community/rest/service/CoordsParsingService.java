@@ -7,6 +7,7 @@ import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -17,14 +18,16 @@ import org.springframework.web.client.RestTemplate;
 import com.community.rest.config.MapConfig;
 import com.community.rest.domain.Merchant;
 import com.community.rest.repository.MerchantRepository;
+import com.community.rest.repository.TradeRepository;
 
+import lombok.AllArgsConstructor;
+
+@AllArgsConstructor
 @Service
 public class CoordsParsingService {
-	@Autowired
-	MerchantRepository merchantRepository;
-	
-	@Autowired
-	MapConfig mapconfig;
+	private final MerchantRepository merchantRepository;
+
+	private final MapConfig mapconfig;
 	
 	private static final Logger LOGGER = LogManager.getLogger(CoordsParsingService.class);
 	

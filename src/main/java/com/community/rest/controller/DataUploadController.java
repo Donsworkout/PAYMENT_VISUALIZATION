@@ -2,11 +2,11 @@ package com.community.rest.controller;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -25,38 +25,26 @@ import com.community.rest.service.CoordsParsingService;
 import com.community.rest.service.DataBaseUploadService;
 import com.community.rest.service.DataUploadService;
 
+import lombok.AllArgsConstructor;
+
 @Controller
+@AllArgsConstructor
 @RequestMapping("upload")
 public class DataUploadController {
 	private static final Logger LOGGER = LogManager.getLogger(DataUploadController.class);
 	
-	@Autowired
-	DataUploadService dataUploadService = new DataUploadService();
-
-	@Autowired
-	CoordsParsingService coordsParsingService = new CoordsParsingService();
-	
-	@Autowired
-	MerchantRepository merchantRepository;
-	
-    @Autowired
-    DataBaseUploadService dataBaseUploadService = new DataBaseUploadService();
-
-    @Autowired
-    TradeRepository tradeRepositorty;
-
-    @Autowired
-    MongoTemplate mongoTemplate;
-  
-    @Autowired
-    ExcelConfig excelconfig;
+	private final DataUploadService dataUploadService;
+	private final CoordsParsingService coordsParsingService;
+	private final MongoTemplate mongoTemplate;
+	private final ExcelConfig excelconfig;
     
 	@GetMapping("")
 	public String uploadForm() {
 		return "upload/form";
 	}
 	
-    @PostMapping("/ajax")
+
+	@PostMapping("/ajax")
     public String excelUpload(MultipartHttpServletRequest request, String sheetType) {
     	
     	LOGGER.info("Excel Upload Started");
