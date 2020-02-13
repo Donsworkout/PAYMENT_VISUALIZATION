@@ -1,4 +1,5 @@
-## 네이버지도 API를 이용한 오프라인 결제 정보 시각화
+## 2019 NAVER CAMPUS HACKDAY SUMMER
+### 네이버지도 API를 이용한 오프라인 결제 정보 시각화 - 사전과제
 
 ### 개발 요구사항 (필수)
 * Java, HTML, Javascript, DB 개발 능력 필요
